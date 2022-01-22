@@ -1,0 +1,13 @@
+{% extends "layout.html" %}  <!--EXTEND LAYOUT FILE-->
+
+{% block body %}<!--Code goes between body blocks-->
+
+    <h1>Login</h1>
+    <form action="/mainpage" method="post">
+        <input autocomplete="off" autofocus name="email" placeholder="Email" type="text">
+        <input autocomplete="off" autofocus name="password" placeholder="Password" type="password">
+        <input type="submit" value="Login">
+
+    </form>
+    
+{% endblock %}
