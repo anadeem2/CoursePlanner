@@ -1,4 +1,6 @@
 from flask import Flask
+from cs50 import SQL
+import pyodbc
 
 app = Flask(__name__)
 
