@@ -1,11 +1,17 @@
-from flask import Flask, redirect, render_template, request, jsonify, url_for
+from flask import Flask, redirect, render_template, request, jsonify, url_for, session
+from flask_session import Session
 from cs50 import SQL
 from flask_mail import Mail, Message
 import os
 
 
+
 # Application Configurations
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"]=False
+app.config["SESSION_TYPE"]="filesystem"
+Session(app)
+
 app.config["MAIL_DEFAULT_SENDER"] = "classplannerit326@gmail.com"
 app.config['MAIL_USERNAME'] = "classplannerit326@gmail.com"
 app.config['MAIL_PASSWORD'] = "Planner123!"
@@ -23,12 +29,22 @@ messageType = ''
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    if not session.get("email"): #Check if session doesn't exist
+        return render_template("index.html")
+
+    COURSES = [("hello", "this", "is", "tuple")]
+    return render_template('dashboard.html', courses=COURSES)
 
 
 @app.route('/login')  # Login page
 def login():
     return render_template("login.html")
+
+
+@app.route('/logout')  # Login page
+def logout():
+    session["email"]=None
+    return redirect("/")
 
 
 @app.route('/signup')  # Signup page
@@ -53,13 +69,18 @@ def registered():
     return render_template("login.html")  # Maybe redirect to mainpage
 
 
-@app.route('/validate', methods=["POST"])
+@app.route('/validate', methods=["GET","POST"])
 def validate():
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
 
     row=db.execute("SELECT sID FROM student WHERE sEmail = ? AND sPassword = ?", user_email, user_pass)
     if len(row)==0: return render_template("error.html", message="Incorrect password or user")
+
+    # Add user session if checkbox true
+    if request.method == "POST" and request.form.get("checkbox"):
+        session["email"] = request.form.get("email")
+        return redirect("/")
 
     COURSES = [("hello","this","is","tuple")]
     return render_template('dashboard.html', courses=COURSES)

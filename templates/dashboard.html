@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 <!--EXTEND LAYOUT FILE-->
 <title>Student Dashboard</title>
-{% block body %}
 
+
+{% block body %}
+<a href="/logout">Log out</a>
 <body>
     <div class="alert alert-{{messageType}}">
         {{message}}
