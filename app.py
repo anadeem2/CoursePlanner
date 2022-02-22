@@ -3,6 +3,7 @@ from flask_session import Session
 from cs50 import SQL
 from flask_mail import Mail, Message
 import os
+from random import randint #For testing random ids
 
 
 
@@ -120,11 +121,12 @@ def dashboard():
 @app.route('/insert', methods=['POST'])
 def insert():
     if request.method == 'POST':
+        id = randint(2, 200)
         name = request.form['name']
         email = request.form['email']
         phone = request.form['phone']
 
-        my_data = Data(sID, name, email, phone)
+        my_data = Data(id, name, email, phone)
         COURSES.append(my_data)
 
         flash("Course Inserted Successfully")
