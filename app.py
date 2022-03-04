@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, request, jsonify, url_for, session, flash
 from flask_session import Session
-from cs50 import SQL
+# from cs50 import SQL
+import sqlite3
 from flask_mail import Mail, Message
 import os
 from random import randint #For testing random ids
@@ -21,7 +22,8 @@ app.config['MAIL_SERVER'] = "smtp.gmail.com"
 app.config['MAIL_USE_TLS'] = True
 
 # Intitializations
-db = SQL('sqlite:///planner.db')
+connection = sqlite3.connect('planner.db')
+db = connection.cursor()
 mail = Mail(app)
 sID = None
 message = ''
