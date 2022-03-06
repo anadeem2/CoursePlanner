@@ -23,6 +23,7 @@ sID = None
 message = ''
 messageType = ''
 
+print([x for x in pyodbc.drivers()])
 
 @app.route('/')
 def index():
