@@ -1,0 +1,27 @@
+==> 2022-03-04 11:07:03 <==
+# cmd: C:\ProgramData\Anaconda3\Scripts\conda-script.py create --name condavenv
+# conda version: 4.10.1
+==> 2022-03-04 11:21:16 <==
+# cmd: C:\ProgramData\Anaconda3\Scripts\conda-script.py install flask
+# conda version: 4.10.1
++defaults/noarch::colorama-0.4.4-pyhd3eb1b0_0
++defaults/noarch::dataclasses-0.8-pyh6d0b6a4_7
++defaults/noarch::flask-2.0.2-pyhd3eb1b0_0
++defaults/noarch::itsdangerous-2.0.1-pyhd3eb1b0_0
++defaults/noarch::jinja2-3.0.2-pyhd3eb1b0_0
++defaults/noarch::tzdata-2021e-hda174b7_0
++defaults/noarch::werkzeug-2.0.3-pyhd3eb1b0_0
++defaults/noarch::wheel-0.37.1-pyhd3eb1b0_0
++defaults/win-64::ca-certificates-2022.2.1-haa95532_0
++defaults/win-64::certifi-2021.10.8-py39haa95532_2
++defaults/win-64::click-8.0.4-py39haa95532_0
++defaults/win-64::markupsafe-2.0.1-py39h2bbff1b_0
++defaults/win-64::openssl-1.1.1m-h2bbff1b_0
++defaults/win-64::pip-21.2.4-py39haa95532_0
++defaults/win-64::python-3.9.7-h6244533_1
++defaults/win-64::setuptools-58.0.4-py39haa95532_0
++defaults/win-64::sqlite-3.37.2-h2bbff1b_0
++defaults/win-64::vc-14.2-h21ff451_1
++defaults/win-64::vs2015_runtime-14.27.29016-h5e58377_2
++defaults/win-64::wincertstore-0.2-py39haa95532_2
+# update specs: ['flask']

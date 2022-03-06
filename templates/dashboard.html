@@ -1,7 +1,11 @@
 {% extends "layout.html" %}
 <!--EXTEND LAYOUT FILE-->
 <title>Student Dashboard</title>
+
+
 {% block body %}
+<a href="/logout">Log out</a> <!--LOGOUT-->
+
 
 <body>
     <div class="alert alert-{{messageType}}">
@@ -17,7 +21,7 @@
                         <th>Currently Taking</th>
                         <th>Taken</th>
                     </tr>
-                    {% for course in courses.fetchall() %}
+                    {% for course in courses %}
                     <tr>
                         {% if course[3] == 'P' %}
                         <td>{{ course[0] }} <br><a value={{course[4]}} class="btn btn-danger">Delete</a></br></td>

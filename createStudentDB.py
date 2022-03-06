@@ -1,13 +1,36 @@
 import sqlite3
 
-connection = sqlite3.connect('IT326Project\student.db')
+connection = sqlite3.connect('planner.db')
 c = connection.cursor()
 
+# c.execute("""DROP TABLE student""")
+# c.execute("""DROP TABLE courses""")
+# c.execute("""DROP TABLE CourseList""")
+
 c.execute("""CREATE TABLE student(
-                id INTEGER,
-                email TEXT NOT NULL,
-                password TEXT NOT NULL,
-                PRIMARY KEY(id)) """)
+                sID INTEGER,
+                sEmail TEXT NOT NULL,
+                sFName TEXT,
+                sLName TEXT,
+                sUsername TEXT,
+                sPassword TEXT NOT NULL,
+                PRIMARY KEY(sID)) """)
+
+c.execute("""CREATE TABLE courses(
+                cID INTEGER,
+                cDept TEXT,
+                cCode TEXT,
+                cName TEXT,
+                PRIMARY KEY(cID)) """)
+
+
+
+c.execute("""CREATE TABLE CourseList(
+                cID INTEGER,
+                cDept TEXT,
+                cCode TEXT,
+                cName TEXT,
+                PRIMARY KEY(cID)) """)
 
 connection.commit()
 connection.close()
@@ -54,3 +77,4 @@ connection.close()
 
 #     def __repr__(self):
 #         return self.clID
+
