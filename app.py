@@ -122,11 +122,12 @@ class Course(db.Model):
 
 @ app.route('/')
 def index():
-    # if "email" not in session:  # Check if session doesn't exist
-    return render_template("index.html")
+    global COURSES
+    if "email" not in session:  # Check if session doesn't exist
+        return render_template("index.html")
 
     # return render_template('dashboard.html', courses=COURSES)
-    # return render_template("mainpage.html", courses=COURSES)
+    return render_template("mainpage.html", courses=COURSES)
 
 
 @ app.route('/login')  # Login page
@@ -137,7 +138,6 @@ def login():
 @ app.route('/logout')  # Logout
 def logout():
     session.pop("email", None)
-    session["email"] = None  # remove session
     global user
     global COURSES
     COURSES = user = None
