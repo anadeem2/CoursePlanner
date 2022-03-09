@@ -3,268 +3,342 @@
 <!--NO LONGER BEING USED-->
 
 
-{% extends "layout2.html" %}
+{% extends "layout.html" %}
 <!--EXTEND LAYOUT FILE-->
 
 {% block body %}
-<a href="/logout">Log out</a> <!--LOGOUT-->
 
 
-<div class="container">
-    <div class="row">
-        <div class="col md-12">
-
-            <div class="jumbotron p-3">
-
-                <h2>Manage <b>Employees </b>  <button type="button"  class="btn btn-success float-right"
-                data-toggle="modal" data-target="#mymodal">Add New Employees</button> </h2>
 
 
-                {% with messages = get_flashed_messages() %}
+<div class="container-fluid">
+   <a class="btn btn-primary" href="/logout">Log out </a>
+   <div class="row">
+      <div class="col md-12">
 
-                {% if messages %}
+         <div class="jumbotron p-3">
 
-                {% for message in messages %}
-
-                <div class="alert alert-success alert-dismissable" role="alert">
-
-                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
-
-                        <span aria-hidden="true">x</span>
-
-                    </button>
+            <h2>Course <b>Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                  data-target="#mymodal">Add Course </button> </h2>
 
 
-                {{message}}
 
 
-                </div>
+
+            <table class="table">
+
+               <tr>
+
+                  <th>Course</th>
+                  <th>Credits</th>
+                  <th>Grade</th>
+                  <th>Difficulty</th>
+                  <th>Quality</th>
+                  <th>Textbook</th>
+                  <th>Skill</th>
+                  <th>Status</th>
+                  <th>Online</th>
+
+               </tr>
 
 
-                {% endfor %}
+               {% for row in courses %}
+               <tr>
+                  <td>{{row}}</td>
+                  <td>{{row.cCredits}}</td>
+                  <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F"}}</td>
+                  <td>{{row.cDifficulty}}</td>
+                  <td>{{row.cQuality}}</td>
+                  <td>{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</td>
+                  <td>{{row.cSkill}}</td>
+                  <td>{{row.cStatus}}</td>
+                  <td>{{"Yes" if row.cOnline==1 else "No" if row.cOnline==0 else "None"}}</td>
 
-                {% endif %}
-                {% endwith %}
-
-
-                <table class="table table-hover table-dark">
-
-                    <tr>
-
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-
-                    </tr>
-
-
-                   {% for row in employees %}
-                    <tr>
-                        <td>{{row.id}}</td>
-                        <td>{{row.name}}</td>
-                        <td>{{row.email}}</td>
-                        <td>{{row.phone}}</td>
-
-                        <td>
-                            <a href="/update/{{row.id}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.id}}">Edit</a>
-                            <a href="/delete/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                  <td>
+                     <a href="/update/{{row.cID}}" class="btn btn-warning btn-xs" data-toggle="modal"
+                        data-target="#modaledit{{row.cID}}">Edit</a>
+                     <a href="/delete/{{row.cID}}" class="btn btn-danger btn-xs"
+                        onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
 
 
-                        </td>
+                  </td>
 
-                    </tr>
-
-
-                  <!-- Modal Edit Employee-->
-<div id="modaledit{{row.id}}" class="modal fade" role="dialog">
-   <div class="modal-dialog">
+               </tr>
 
 
-      <div class="modal-content">
+               <!-- Modal Edit Employee-->
+               <div id="modaledit{{row.cID}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
 
 
-         <div class="modal-header">
+                     <div class="modal-content">
 
 
-            <h4 class="modal-title">Update Information</h4>
+                        <div class="modal-header">
+
+
+                           <h4 class="modal-title">Course Information</h4>
+
+
+                        </div>
+
+
+                        <div class="modal-body">
+
+
+                           <form action="/update/{{row.cID}}" method="POST">
+
+
+                              <div class="form-group">
+
+                                 <input type="hidden" class="form-control" name="cID" value="{{row.cID}}">
+
+                                 <label>Grade:</label> <br>
+
+                <!--                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}"> -->
+                                 <select name="grade">
+
+
+                                    <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F"}}</option>
+                                    <option value="4">A</option>
+                                    <option value="3.5">B</option>
+                                    <option value="2.5">C</option>
+                                    <option value="2">D</option>
+                                    <option value="1">F</option>
+                                 </select>
+
+
+                              </div>
+
+
+
+                              <div class="form-group">
+
+
+                                 <label>Textbook Required:</label> <br>
+
+<!--                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">-->
+
+                                 <select name="textbook">
+                                    <option disabled selected value="{{row.cTextbook}}">{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                 </select>
+
+
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <label>Is Online:</label> <br>
+
+<!--                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">-->
+                                 <select name="online">
+                                    <option disabled selected value="{{row.cOnline}}">{{"Yes" if row.cOnline==1 else "No" if row.cOnline==0 else "None"}}</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                 </select>
+
+                              </div>
+
+
+                              <div class="form-group">
+
+
+                                 <label>Class Difficulty:</label> <br>
+
+<!--                                  <input type="number" class="form-control" name="difficulty" value="{{row.cDifficulty}}">-->
+                                 <select name="difficulty">
+                                    <option disabled selected value="{{row.cDifficulty}}">{{row.cDifficulty}}</option>
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="1">1</option>
+                                 </select>
+
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <label>Class Quality:</label> <br>
+
+<!--                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">-->
+                                 <select name="quality">
+                                    <option disabled selected value="{{row.cQuality}}">{{row.cQuality}}</option>
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="1">1</option>
+                                 </select>
+
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <label>Suggested Skill:</label> <br>
+
+<!--                                 <input type="text" class="form-control" name="skill" value="{{row.cSkill}}">-->
+                                 <select name="skill">
+                                    <option disabled selected value="{{row.cSkill}}">{{row.cSkill}}</option>
+                                    <option value="Python">Python</option>
+                                    <option value="C++">C++</option>
+                                    <option value="Java">Java</option>
+                                    <option value="Recursion">Recursion</option>
+                                    <option value="Linux">Linux</option>
+                                    <option value="Git">Git</option>
+                                 </select>
+
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <label>Current Class Status:</label> <br>
+
+<!--                                 <input type="text" class="form-control" name="status" value="{{row.cStatus}}">-->
+                                 <select name="status">
+                                    <option disabled selected value="{{row.cStatus}}">{{row.cStatus}}</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Taken">Taken</option>
+                                    <option value="Planned">Planned</option>
+                                 </select>
+
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <button class="btn btn-primary" type="submit">Update</button>
+
+
+                              </div>
+
+
+                           </form>
+
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+
+                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+
+                        </div>
+
+
+                     </div>
+
+
+                  </div>
+
+               </div>
+
+
+               {% endfor %}
+
+
+            </table>
 
 
          </div>
 
 
-         <div class="modal-body">
+
+         <!-- Modal Add Employee-->
 
 
-            <form action="{{url_for('update')}}" method="POST">
+         <div id="mymodal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+
+                     <h4 class="modal-title">Add Course</h4>
+                  </div>
+                  <div class="modal-body">
+
+                     <form action="{{url_for('insert')}}" method="POST">
 
 
-               <div class="form-group">
+                        <div class="form-group">
 
 
-                  <label>Name:</label>
-                   <input type="hidden"  name="id" value="{{row.id}}">
+                           <label>Code:</label>
+                           <input type="text" class="form-control" name="code" required="1">
 
-                  <input type="text" class="form-control" name="name" value="{{row.name}}">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+
+                           <label>Name:</label>
+                           <input type="text" class="form-control" name="name" required="1">
+
+
+                        </div>
+
+                        <div class="form-group">
+
+
+                           <label>Credits:</label>
+                           <input type="number" class="form-control" name="credits" required="1">
+
+
+                        </div>
+
+
+
+                        <div class="form-group">
+
+
+                           <button class="btn btn-primary" type="submit">Add Course</button>
+
+
+                        </div>
+
+
+                     </form>
+
+
+                  </div>
+
+
+                  <div class="modal-footer">
+
+
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+
+                  </div>
 
 
                </div>
-
-
-
-               <div class="form-group">
-
-
-                  <label>Email:</label>
-
-                  <input type="text" class="form-control" name="email" value="{{row.email}}">
-
-
-               </div>
-
-
-               <div class="form-group">
-
-
-                  <label>Phone:</label>
-
-                  <input type="text" class="form-control" name="phone" value="{{row.phone}}">
-
-
-               </div>
-
-
-               <div class="form-group">
-
-
-                  <button class="btn btn-primary" type="submit">Update</button>
-
-
-               </div>
-
-
-            </form>
-
-
-         </div>
-
-
-         <div class="modal-footer">
-
-
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-
-         </div>
-
-
-      </div>
-
-
-   </div>
-
-</div>
-
-
-                    {% endfor %}
-
-
-                </table>
 
 
             </div>
 
 
-
-                  <!-- Modal Add Employee-->
-
-
-<div id="mymodal" class="modal fade" role="dialog">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-
-            <h4 class="modal-title">Add Employee</h4>
-         </div>
-         <div class="modal-body">
-
-            <form action="{{url_for('insert')}}" method="POST">
-
-
-               <div class="form-group">
-
-                  <label>Name:</label>
-                  <input type="text" class="form-control" name="name" required="1">
-
-
-               </div>
-
-
-                <div class="form-group">
-
-
-                  <label>Email:</label>
-                  <input type="email" class="form-control" name="email" required="1">
-
-
-               </div>
-
-
-                <div class="form-group">
-
-
-                  <label>Phone:</label>
-                  <input type="number" class="form-control" name="phone" required="1">
-
-
-               </div>
-
-
-
-               <div class="form-group">
-
-
-                  <button class="btn btn-primary" type="submit">Add Employee</button>
-
-
-               </div>
-
-
-            </form>
-
-
          </div>
 
 
-         <div class="modal-footer">
 
-
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-
-         </div>
 
 
       </div>
 
-
    </div>
-
-
-</div>
-
-
-
-
-
-        </div>
-
-    </div>
 
 
 </div>
 
 
 {% endblock %}
-

@@ -1,9 +1,10 @@
-
 {% extends "layout.html" %}
 <!--EXTEND LAYOUT FILE-->
 
 {% block body %}
 <!--Code goes between body blocks-->
+
+<link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
 
 <body class="text-center">
     <main class="form-signin">
@@ -17,6 +18,9 @@
                 <input name="password" type="password" class="form-control" id="floatingPassword"
                     placeholder="Password">
             </div>
+            <div class="form-floating">
+                <a href="/forgot">Forogt Password</a>
+            </div>
             <div class="checkbox mb-3">
                 <label>
                     <input name="checkbox" type="checkbox" value="remember-me"> Remember me
@@ -29,4 +33,3 @@
 
 
 {% endblock %}
-
