@@ -1,5 +1,6 @@
 from time import sleep
 from turtle import st
+import csv
 from flask import Flask, redirect, render_template, request, jsonify, url_for, session, flash
 from flask_session import Session
 # from cs50 import SQL
@@ -59,7 +60,7 @@ class Course(db.Model):
     cID = db.Column(db.Integer, primary_key=True)
     cCode = db.Column(db.String(10), nullable=False)  # IT383
     cName = db.Column(db.String(200), nullable=False)  # Operating Systems
-    # Grade 5 = A 1 = F
+    # Grade 4=A, 3.5=B, etc
     cGrade = db.Column(db.Float, nullable=True)
     # 1 = True 0 = False
     cTextbook = db.Column(db.Float, nullable=True)
@@ -84,6 +85,22 @@ class Course(db.Model):
 
     def __repr__(self):
         return self.cCode + " - " + self.cName
+
+
+class CourseBank(db.Model):
+    cID = db.Column(db.Integer, primary_key=True)
+    cDept = db.Column(db.String(200), nullable=False)  # IT
+    cCode = db.Column(db.String(20), nullable=False)  # 383
+    cName = db.Column(db.String(200), nullable=False)  # Operating Systems
+    cCredits = db.Column(db.String(20), nullable=False)
+    cDesc = db.Column(db.String(200), nullable=False)
+
+    def __init__(self, dept,code,name,credits,desc):
+        self.cDept = dept
+        self.cCode = code
+        self.cName = name
+        self.cCredits = credits
+        self.cDesc = desc
 
 
 # class CourseList(db.Model):
@@ -123,6 +140,7 @@ class Course(db.Model):
 @ app.route('/')
 def index():
     global COURSES
+
     if "email" not in session:  # Check if session doesn't exist
         return render_template("index.html")
 
@@ -317,4 +335,13 @@ def delete(id):
 
 if __name__ == "__main__":
     db.create_all()
+
+    # with open("IT 326 course list.csv", "r") as f:
+    #     reader = csv.reader(f, delimiter=",")
+    #     for line in reader:
+    #         dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
+    #         newCourse = CourseBank(dept, code, name, credits, desc)
+    #         db.session.add(newCourse)
+    # db.session.commit()
+
     app.run(debug=True)
