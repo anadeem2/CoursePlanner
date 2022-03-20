@@ -9,6 +9,7 @@ from flask_mail import Mail, Message
 import os
 from random import randint
 from datetime import timedelta
+from dbObjects import Student, Course, Major 
 
 
 # Application Configurations
@@ -36,88 +37,10 @@ COURSES = None
 message = ''
 
 
-class Student(db.Model):
-    __tablename__ = 'Student'
-    sID = db.Column(db.Integer, primary_key=True)
-    sEmail = db.Column(db.String(200), nullable=False)
-    sFName = db.Column(db.String(200), nullable=True)
-    sLName = db.Column(db.String(200), nullable=True)
-    sPassword = db.Column(db.String(200), nullable=False)
-
-    def __init__(self, email, password, fname, lname):
-        self.sEmail = email
-        self.sPassword = password
-        self.sFName = fname
-        self.sLName = lname
-
-    def __repr__(self):
-        return self.sID
 
 
-class Course(db.Model):
-    __tablename__ = 'Course'
-    cID = db.Column(db.Integer, primary_key=True)
-    cCode = db.Column(db.String(10), nullable=False)  # IT383
-    cName = db.Column(db.String(200), nullable=False)  # Operating Systems
-    # Grade 5 = A 1 = F
-    cGrade = db.Column(db.Float, nullable=True)
-    # 1 = True 0 = False
-    cTextbook = db.Column(db.Float, nullable=True)
-    cOnline = db.Column(db.Float, nullable=True)
-    cCredits = db.Column(db.Integer, nullable=False)
-    # 1-5 scale 5 = most difficult
-    cDifficulty = db.Column(db.Float, nullable=True)
-    # skill suggestions
-    cSkill = db.Column(db.String(200), nullable=True)
-    # avg online
-    cQuality = db.Column(db.Float, nullable=True)
-    cStudentID = db.Column("cStudentID", ForeignKey(
-        'Student.sID'), nullable=False)
-
-    cStatus = db.Column(db.String(4), nullable=True)
-
-    def __init__(self, studentID, code, name, credits):
-        self.cStudentID = studentID
-        self.cCode = code
-        self.cName = name
-        self.cCredits = credits
-
-    def __repr__(self):
-        return self.cCode + " - " + self.cName
-
-
-# class CourseList(db.Model):
-#     __tablename__ = 'CourseList'
-#     clID = db.Column(db.Integer, primary_key=True)
-#     clStudentID = db.Column("clStudentID", ForeignKey(
-#         'Student.sID'), nullable=False)
-#     clCourseID = db.Column("clCourseID", ForeignKey(
-#         'Course.cID'), nullable=False)
-#     # 1 = Inprogress (IP), 2 =  Taken (T), 3 = Planned (P)
-#     clStatus = db.Column(db.Integer, nullable=False)
-#     clGrade = db.Column(db.String, nullable=True)
-
-#     def __init__(self, stuID, courseID, status):
-#         self.clStudentID = stuID
-#         self.clCourseID = courseID
-#         self.clStatus = status
-
-#     def __repr__(self):
-#         return self.clID
-
-
-# class Data:
-#     def __init__(self, id, name, email, phone):
-#         self.id = id
-#         self.name = name
-#         self.email = email
-#         self.phone = phone
-
-
-# x = Data(1, "IT327", "email@", "3095555555")
-# # COURSES = [x]
-# user = None
-# COURSES = None
+def getGlobalUser():
+    return user
 
 
 @ app.route('/')
@@ -220,6 +143,47 @@ def validate():
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
+@app.route('/viewmajors', methods = ['GET'])
+def viewmajors():   
+    # try:
+        # fetching availiable majors
+        # db.execute("SELECT majorName from majors")
+        # majors = db.fetchall()
+        # majors = ["Computer Science", "Cyber Security", "Major 3"]
+            # db.execute("SELECT sID FROM student WHERE sEmail = ? AND sPassword = ?", user_email, user_pass)
+            # sID = db.fetchall()
+
+            # fetching users major
+            # db.execute("SELECT sMajor FROM student WHERE sEmail = ? AND sPassword = ?", user_email, user_pass)
+           
+
+    # except pyodbc.Error as e:
+    #     return render_template("error.html", message = "No majors exist")
+
+
+
+    # majors = ["Computer Science", "Cyber Security", "Networking"]
+    majors = Major.query.all()
+    for major in majors:
+        print(major.mID)
+    myUser = getGlobalUser()
+    if myUser == None:
+        validate()
+        return render_template("viewmajors.html",majors=majors)
+    print(str(myUser.sEmail))
+    curMajor = db.session.query(Major)\
+        .filter(Major.mID == myUser.sMajorID).first()
+    
+    print(curMajor)
+    curMajor = 'Undecided'
+    # return render_template("viewmajors.html", majors=majors, sID = sID, sMajor = sMajor)
+    return render_template("viewmajors.html",majors=majors,curMajor=curMajor)
+
+@ app.route('/selectmajor<int:id>', methods=['POST'])
+def selectmajor():
+    viewmajors()
+    # major = request.form['']
+    
 
 @ app.route('/dashboard', methods=["POST"])
 def dashboard():
@@ -315,6 +279,12 @@ def delete(id):
     return render_template("mainpage.html", courses=COURSES)
 
 
+
+
 if __name__ == "__main__":
+    # Student.query.all().delete()
+    # db.session.commit()
+
     db.create_all()
-    app.run(debug=True)
+    app.run(debug=True) 
+    

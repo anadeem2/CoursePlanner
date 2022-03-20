@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+<!--EXTEND LAYOUT FILE-->
+
+{% block body %}
+<!--Code goes between body blocks-->
+
+<head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>None</title>
+</head>
+
+<body>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function(){
+      var sMajor = {sMajor}
+
+
+      $("#classInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      $('.table > tbody > tr').click(function() {
+        sMajor = $(this).text();
+        console.log(sMajor);
+      });
+    });
+    </script>
+
+
+
+    <div class = "container">
+      <h1 align="center">Major's Setting Page</12>
+      <h2>Select Major</h2>
+      <h2>Current Major: {{sMajor}}</h2>
+      <input class="form-control" id="classInput" type="text" placeholder="Search...">
+      <br>
+      
+      <form method="post" action="/viewmajors"> 
+        <table class="table table-bordered table-striped">
+        
+          <thead>
+            <tr>
+              <th>Majors</th>
+            </tr>
+          </thead>
+          <tbody id="myTable">
+            {% for major in majors %}
+            <tr>
+                <td>{{major.mName}}</td>
+                <td>
+                  <a id="majorSelect" href="/selectmajor/{{major.mID}}" class="btn btn-warning btn-xs" >Select</a>
+      
+               </td>
+            </tr>
+            {% endfor %}
+
+
+          </tbody>
+          
+        </table>
+        <!-- <button class="w-100 btn btn-lg btn-primary" type="submit">Select major</button> -->
+    </form>
+        
+      </div>
+
+
+</body>
+
+
+
+{% endblock %}
