@@ -50,6 +50,7 @@ def index():
         return render_template("index.html")
 
     # return render_template('dashboard.html', courses=COURSES)
+    print("test")
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -143,47 +144,33 @@ def validate():
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
-@app.route('/viewmajors', methods = ['GET'])
+@app.route('/viewmajors', methods = ['GET','POST'])
 def viewmajors():   
-    # try:
-        # fetching availiable majors
-        # db.execute("SELECT majorName from majors")
-        # majors = db.fetchall()
-        # majors = ["Computer Science", "Cyber Security", "Major 3"]
-            # db.execute("SELECT sID FROM student WHERE sEmail = ? AND sPassword = ?", user_email, user_pass)
-            # sID = db.fetchall()
-
-            # fetching users major
-            # db.execute("SELECT sMajor FROM student WHERE sEmail = ? AND sPassword = ?", user_email, user_pass)
-           
-
-    # except pyodbc.Error as e:
-    #     return render_template("error.html", message = "No majors exist")
-
-
-
-    # majors = ["Computer Science", "Cyber Security", "Networking"]
+    global user
     majors = Major.query.all()
-    for major in majors:
-        print(major.mID)
-    myUser = getGlobalUser()
-    if myUser == None:
-        validate()
-        return render_template("viewmajors.html",majors=majors)
-    print(str(myUser.sEmail))
+
     curMajor = db.session.query(Major)\
-        .filter(Major.mID == myUser.sMajorID).first()
-    
-    print(curMajor)
-    curMajor = 'Undecided'
-    # return render_template("viewmajors.html", majors=majors, sID = sID, sMajor = sMajor)
+        .filter(Major.mID == user.sMajorID).first()
+
     return render_template("viewmajors.html",majors=majors,curMajor=curMajor)
 
-@ app.route('/selectmajor<int:id>', methods=['POST'])
-def selectmajor():
-    viewmajors()
-    # major = request.form['']
-    
+# updates the major in the DB and displays a message reflecting that to that user
+@ app.route('/updatemajor/<int:id>', methods=['GET','POST'])
+def selectmajor(id):
+    global user
+    majors = Major.query.all()
+
+    if user == None:
+        return render_template("/validate.html")
+
+    user.sMajorID = id
+    majorName = db.session.query(Major)\
+        .filter(Major.mID == user.sMajorID).first()
+    db.session.commit()
+    flash("Major Successfully Updated")
+    return render_template('viewmajors.html',majors=majors,curMajor=majorName)
+
+
 
 @ app.route('/dashboard', methods=["POST"])
 def dashboard():
@@ -229,7 +216,6 @@ def insert():
 @ app.route('/update/<int:id>', methods=['POST'])
 def update(id):
     global COURSES
-    # my_data = Data.query.get(request.form.get('id'))
     updateCourse = Course.query.filter_by(
         cStudentID=user.sID, cID=id).first()
 
@@ -243,18 +229,7 @@ def update(id):
     if request.form.get('online'): updateCourse.cOnline = request.form.get('online')
     db.session.commit()
 
-    # db.session.query(Course)\
-    #     .filter(Course.cStudentID == user.sID, Course.cID == request.form.get('id'))\
-    #     .update({
-    #         Course.cTextbook: request.form['textbook'],
-    #         Course.cDifficulty: request.form['difficulty'],
-    #         Course.cSkill: request.form['difficulty'],
-    #         Course.cQuality: request.form['quality'],
-    #         Course.cGrade: request.form['grade']
-    #     })
-    # db.session.commit()
 
-    # db.session.commit()
     flash("Course Updated Successfully")
 
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
@@ -278,13 +253,7 @@ def delete(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
-
-
-
 if __name__ == "__main__":
-    # Student.query.all().delete()
-    # db.session.commit()
-
-    db.create_all()
+    db.create_all()    
     app.run(debug=True) 
     

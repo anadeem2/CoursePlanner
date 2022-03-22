@@ -30,8 +30,9 @@ class Student(db.Model):
     sFName = db.Column(db.String(200), nullable=True)
     sLName = db.Column(db.String(200), nullable=True)
     sPassword = db.Column(db.String(200), nullable=False)
-    sMajorID =  db.Column("sMajorID", ForeignKey(
-        'Major.mID'), nullable=False)
+    sMajorID = db.Column(db.Integer, nullable=False)
+    # sMajorID =  db.Column("sMajorID", ForeignKey(
+    #     'Major.mID'), nullable=False)
     def __init__(self, email, password, fname, lname, majorID=1):
         self.sEmail = email
         self.sPassword = password
@@ -41,7 +42,9 @@ class Student(db.Model):
 
     def __repr__(self):
         return self.sID
-
+    
+    def setMajorID(self,id: int):
+        self.sMajorID = id
 
 class Course(db.Model):
     __tablename__ = 'Course'
@@ -86,6 +89,7 @@ class Major(db.Model):
     def __repr__(self):
         return self.mName
 
+
 # class CourseList(db.Model):
 #     __tablename__ = 'CourseList'
 #     clID = db.Column(db.Integer, primary_key=True)
@@ -128,9 +132,20 @@ def testMajor():
     for major in majors:
         print(major)
 
+def testStudent():
+    # db.session.query(Student).delete()
+    # db.session.execute("ALTER TABLE Student ADD sMajorID Integer")
+    # db.session.commit()
+    tjfreie = Student(email='tjfreie.ilstu.edu',password='password',fname='Tom',lname='Freier')
+    db.session.add(tjfreie)
+    db.session.commit()
+
 
 if __name__ == '__main__':
+    # Student.__table__.drop()
     db.create_all()
-    testMajor()
+    db.session.commit()
+    # testMajor()
+    # testStudent()
     
     

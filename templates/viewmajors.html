@@ -37,7 +37,7 @@
     <div class = "container">
       <h1 align="center">Major's Setting Page</12>
       <h2>Select Major</h2>
-      <h2>Current Major: {{sMajor}}</h2>
+      <h4>Current Major: {{curMajor}}</h4>
       <input class="form-control" id="classInput" type="text" placeholder="Search...">
       <br>
       
@@ -54,8 +54,9 @@
             <tr>
                 <td>{{major.mName}}</td>
                 <td>
-                  <a id="majorSelect" href="/selectmajor/{{major.mID}}" class="btn btn-warning btn-xs" >Select</a>
+                  <a id="majorSelect" href="/updatemajor/{{major.mID}}" class="btn btn-warning btn-xs" >Select</a>
       
+
                </td>
             </tr>
             {% endfor %}
