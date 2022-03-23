@@ -135,7 +135,7 @@ def testMajor():
 def testStudent():
     # db.session.query(Student).delete()
     # db.session.execute("ALTER TABLE Student ADD sMajorID Integer")
-    # db.session.commit()
+    db.session.commit()
     tjfreie = Student(email='tjfreie.ilstu.edu',password='password',fname='Tom',lname='Freier')
     db.session.add(tjfreie)
     db.session.commit()

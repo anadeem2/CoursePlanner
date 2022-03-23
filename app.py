@@ -9,7 +9,8 @@ from flask_mail import Mail, Message
 import os
 from random import randint
 from datetime import timedelta
-from dbObjects import Student, Course, Major 
+from dbObjects import Student, Course, Major
+# from cryptography.fernet import Fernet
 
 
 # Application Configurations
@@ -35,8 +36,6 @@ mail = Mail(app)
 user = None
 COURSES = None
 message = ''
-
-
 
 
 def getGlobalUser():
@@ -144,32 +143,44 @@ def validate():
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
-@app.route('/viewmajors', methods = ['GET','POST'])
-def viewmajors():   
+
+@app.route('/viewmajors', methods=['GET', 'POST'])
+def viewmajors():
     global user
     majors = Major.query.all()
 
+
+    print("user:" + str(user.sID) + "\tuser.sMajorID: " + str(user.sMajorID))
+    
+
     curMajor = db.session.query(Major)\
         .filter(Major.mID == user.sMajorID).first()
-
-    return render_template("viewmajors.html",majors=majors,curMajor=curMajor)
+    
+    return render_template("viewmajors.html", majors=majors, curMajor=curMajor)
 
 # updates the major in the DB and displays a message reflecting that to that user
-@ app.route('/updatemajor/<int:id>', methods=['GET','POST'])
-def selectmajor(id):
+@ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
+def selectmajor(majorID):
     global user
+    global CORSES
     majors = Major.query.all()
 
     if user == None:
         return render_template("/validate.html")
 
-    user.sMajorID = id
-    majorName = db.session.query(Major)\
-        .filter(Major.mID == user.sMajorID).first()
-    db.session.commit()
-    flash("Major Successfully Updated")
-    return render_template('viewmajors.html',majors=majors,curMajor=majorName)
+    # print("before updating: " + str(user.sMajorID))
 
+    user.sMajorID = majorID
+    db.session.commit()
+
+
+    # print("after updating: " + str(user.sMajorID))
+    majorName = db.session.query(Major)\
+        .filter(Major.mID == user.sMajorID).first() # querying for row that matches the user's majorID
+    
+    print(majorName)
+    flash("Major Successfully Updated")
+    return render_template('mainpage.html', coures=COURSES)
 
 
 @ app.route('/dashboard', methods=["POST"])
@@ -219,16 +230,21 @@ def update(id):
     updateCourse = Course.query.filter_by(
         cStudentID=user.sID, cID=id).first()
 
-
-    if request.form.get('textbook'): updateCourse.cTextbook = request.form.get('textbook')
-    if request.form.get('difficulty'): updateCourse.cDifficulty = request.form.get('difficulty')
-    if request.form.get('skill'): updateCourse.cSkill = request.form.get('skill')
-    if request.form.get('quality'): updateCourse.cQuality = request.form.get('quality')
-    if request.form.get('grade'): updateCourse.cGrade = request.form.get('grade')
-    if request.form.get('status'): updateCourse.cStatus = request.form.get('status')
-    if request.form.get('online'): updateCourse.cOnline = request.form.get('online')
+    if request.form.get('textbook'):
+        updateCourse.cTextbook = request.form.get('textbook')
+    if request.form.get('difficulty'):
+        updateCourse.cDifficulty = request.form.get('difficulty')
+    if request.form.get('skill'):
+        updateCourse.cSkill = request.form.get('skill')
+    if request.form.get('quality'):
+        updateCourse.cQuality = request.form.get('quality')
+    if request.form.get('grade'):
+        updateCourse.cGrade = request.form.get('grade')
+    if request.form.get('status'):
+        updateCourse.cStatus = request.form.get('status')
+    if request.form.get('online'):
+        updateCourse.cOnline = request.form.get('online')
     db.session.commit()
-
 
     flash("Course Updated Successfully")
 
@@ -253,7 +269,11 @@ def delete(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
+@ app.route('/mainpage')
+def mainpage():
+    global COURSES
+    return render_template('mainpage.html', courses=COURSES)
+
 if __name__ == "__main__":
-    db.create_all()    
-    app.run(debug=True) 
-    
+    db.create_all()
+    app.run(debug=True)
