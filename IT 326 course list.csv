@@ -1,4 +1,5 @@
-﻿IT,140,Interacting In A Digital World,3,"COM 110,""ENG 101",This course provides foundation concepts of computers and information technologies and their application in today's world. Lecture and lab. Not for credit IT Major or minor.,,,,,,,,,,,,,,,,,,,
+﻿,,,,,,,,,
+IT,140,Interacting In A Digital World,3,"COM 110,""ENG 101",This course provides foundation concepts of computers and information technologies and their application in today's world. Lecture and lab. Not for credit IT Major or minor.,,,,,,,,,,,,,,,,,,,
 IT,150,Using Microcomputer Productivity Tools,3,,"Introduction to typical microcomputer-based productivity tools such as word processing, spreadsheets, databases, and presentation graphics. Lecture and lab. Not for credit IT major/minor, or if had BTE 125.",,,,,,,,,,,,,,,,,,,
 IT,164,Introduction To Problem Solving Using The Computer,3,,"Use of pseudocode, charts, and Python to develop the analytical and algorithmic thinking necessary to succeeding in programming courses.",,,,,,,,,,,,,,,,,,,
 IT,165,Computer Programming For Scientists,4,MAT 145,Introduction to computer programming emphasizing numerical algorithms for scientific applications. Problem analysis and operating system concepts included. Not for credit IT major or minor. Lecture and lab.,,,,,,,,,,,,,,,,,,,
@@ -8,8 +9,7 @@ IT,170,Scripting Languages and Automation,3,IT 168,"Fundamentals of scripting la
 IT,175,Python for Networking and Security ,3,MAT 140,"Fundamentals of scripting languages for automation of tasks and general programming. Emphasis on portability, text processing and system administration. Not for credit if had IT 170.",,,,,,,,,,,,,,,,,,,
 IT,178,Computer Application Programming,3,IT 168,"The design, development, and implementation of computer application systems, including files and GUI.",,,,,,,,,,,,,,,,,,,
 IT,179,Introduction To Data Structures,3,IT 168,"Intermediate computer programming, including elementary data structures such as linked lists, stacks, queues, binary trees.",,,,,,,,,,,,,,,,,,,
-IT,180,"C++ Programming
-",1,IT 179,"Introduction to the C++ programming language with emphasis on pointers, dynamic memory management, and templates.",,,,,,,,,,,,,,,,,,,
+IT,180,"C++ Programming",1,IT 179,"Introduction to the C++ programming language with emphasis on pointers, dynamic memory management, and templates.",,,,,,,,,,,,,,,,,,,
 IT,191,Introduction To IT Professional Practice,1,IT 168 or IT 175,"Researching available positions, interpreting job descriptions, interview skills, preparing a resume, benefits of a Professional Practice experience.",,,,,,,,,,,,,,,,,,,
 IT,214,"Social, Legal, And Ethical Issues In Information Technology",3,"[""COM 110"" ,""ENG 101""]","Study of personal, societal, legal, and ethical issues raised by the effects of information technology.",,,,,,,,,,,,,,,,,,,
 IT,225,Computer Organization,3,"[""IT 178"" or ""IT179""]","Introduction to computer organization, internal representation of instructions and data, and interaction between software and hardware components.",,,,,,,,,,,,,,,,,,,

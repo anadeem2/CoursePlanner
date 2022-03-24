@@ -342,6 +342,29 @@ if __name__ == "__main__":
     #         dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
     #         newCourse = CourseBank(dept, code, name, credits, desc)
     #         db.session.add(newCourse)
+    
+    
+    
+    
     # db.session.commit()
-
-    app.run(debug=True)
+    # db.session.commit()
+    
+    db.session.query(CourseBank).delete()
+    with open("IT 326 course list.csv", "r") as f:
+        reader = csv.reader(f, delimiter=",")
+        for line in reader:
+            dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
+            newCourse = CourseBank(dept, code, name, credits, desc)
+            db.session.add(newCourse)
+    db.session.commit()
+    
+    db.create_all()
+    
+    courses = CourseBank.query.all()
+    for c in courses[1:]:
+        print(c.cDept,
+            c.cCode,
+            c.cName,
+            c.cCredits)
+            
+    
