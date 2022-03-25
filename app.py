@@ -35,7 +35,7 @@ mail = Mail(app)
 user = None
 COURSES = None
 message = ''
-
+userID = None
 
 class Student(db.Model):
     __tablename__ = 'Student'
@@ -229,10 +229,11 @@ def validate():
     user_pass = request.form.get("password")
 
     global user
+    global userID
     global COURSES
 
     user = Student.query.filter_by(sEmail=user_email).first()
-
+    userID = user.sID
     if not user:
         flash("No user account for email")
         return redirect(url_for("signup"))
@@ -247,7 +248,7 @@ def validate():
         session["email"] = request.form.get("email")
 
     # return render_template('dashboard.html', courses=COURSES)
-    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
+    COURSES = Course.query.filter_by(cStudentID=userID).all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -346,9 +347,10 @@ def delete(id):
 
 @app.route('/viewmajors', methods=['GET', 'POST'])
 def viewmajors():
-    global user
+    global userID
     majors = Major.query.all()
-
+    user = db.session.query(Student)\
+        .filter(Student.sID == userID).first()
 
     print("user:" + str(user.sID) + "\tuser.sMajorID: " + str(user.sMajorID))
     
@@ -361,10 +363,11 @@ def viewmajors():
 # updates the major in the DB and displays a message reflecting that to that user
 @ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
 def selectmajor(majorID):
-    global user
-    global CORSES
+    global userID
+    global COURSES
     majors = Major.query.all()
-
+    user = db.session.query(Student)\
+        .filter(Student.sID == userID).first()
     if user == None:
         return render_template("/validate.html")
 
@@ -377,25 +380,25 @@ def selectmajor(majorID):
     # print("after updating: " + str(user.sMajorID))
     majorName = db.session.query(Major)\
         .filter(Major.mID == user.sMajorID).first() # querying for row that matches the user's majorID
-    
+    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     print(majorName)
     flash("Major Successfully Updated")
-    return render_template('mainpage.html', coures=COURSES)
+    return render_template('mainpage.html', courses=COURSES)
 
 def createMajors():
     
-    undecided = Major(mName='Undecided')
-    db.session.add(undecided)
-    db.session.commit()
-    comSci = Major(mName='Computer Science')
-    db.session.add(comSci)
-    db.session.commit()
-    cyberSec = Major(mName='Cyber Security')
-    db.session.add(cyberSec)
-    db.session.commit()
-    infoTech = Major(mName='Information Technology') 
-    db.session.add(infoTech)
-    db.session.commit()
+    # undecided = Major(mName='Undecided')
+    # db.session.add(undecided)
+    # db.session.commit()
+    # comSci = Major(mName='Computer Science')
+    # db.session.add(comSci)
+    # db.session.commit()
+    # cyberSec = Major(mName='Cyber Security')
+    # db.session.add(cyberSec)
+    # db.session.commit()
+    # infoTech = Major(mName='Information Technology') 
+    # db.session.add(infoTech)
+    # db.session.commit()
     majors = Major.query.all()
     for major in majors:
         print(major) 
@@ -404,7 +407,7 @@ if __name__ == "__main__":
     db.create_all()
     
     db.session.commit()
-    createMajors()
+    # createMajors()
     # db.session.query(Major).delete()
     # db.session.query(Student).delete()
 
