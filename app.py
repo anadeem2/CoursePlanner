@@ -44,12 +44,13 @@ class Student(db.Model):
     sFName = db.Column(db.String(200), nullable=True)
     sLName = db.Column(db.String(200), nullable=True)
     sPassword = db.Column(db.String(200), nullable=False)
-
-    def __init__(self, email, password, fname, lname):
+    sMajorID = db.Column(db.Integer, nullable=False)
+    def __init__(self, email, password, fname, lname, sMajorID=1):
         self.sEmail = email
         self.sPassword = password
         self.sFName = fname
         self.sLName = lname
+        self.sMajorID = sMajorID
 
     def __repr__(self):
         return self.sID
@@ -94,7 +95,7 @@ class CourseBank(db.Model):
     cName = db.Column(db.String(200), nullable=False)  # Operating Systems
     cCredits = db.Column(db.String(20), nullable=False)
     cDesc = db.Column(db.String(200), nullable=False)
-
+    
     def __init__(self, dept,code,name,credits,desc):
         self.cDept = dept
         self.cCode = code
@@ -102,6 +103,17 @@ class CourseBank(db.Model):
         self.cCredits = credits
         self.cDesc = desc
 
+class Major(db.Model):
+    __tablename__ = 'Major'
+    mID = db.Column(db.Integer, primary_key = True)
+    mName = db.Column(db.String(50), nullable=False) # Computer Science
+
+    def __int__(self, majorName):
+        self.mName = majorName
+    
+
+    def __repr__(self):
+        return self.mName
 
 # class CourseList(db.Model):
 #     __tablename__ = 'CourseList'
@@ -369,9 +381,32 @@ def selectmajor(majorID):
     print(majorName)
     flash("Major Successfully Updated")
     return render_template('mainpage.html', coures=COURSES)
+
+def createMajors():
     
+    undecided = Major(mName='Undecided')
+    db.session.add(undecided)
+    db.session.commit()
+    comSci = Major(mName='Computer Science')
+    db.session.add(comSci)
+    db.session.commit()
+    cyberSec = Major(mName='Cyber Security')
+    db.session.add(cyberSec)
+    db.session.commit()
+    infoTech = Major(mName='Information Technology') 
+    db.session.add(infoTech)
+    db.session.commit()
+    majors = Major.query.all()
+    for major in majors:
+        print(major) 
+
 if __name__ == "__main__":
     db.create_all()
+    
+    db.session.commit()
+    createMajors()
+    # db.session.query(Major).delete()
+    # db.session.query(Student).delete()
 
     # with open("IT 326 course list.csv", "r") as f:
     #     reader = csv.reader(f, delimiter=",")
