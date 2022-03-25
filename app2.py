@@ -1,6 +1,5 @@
 from time import sleep
 from turtle import st
-import csv
 from flask import Flask, redirect, render_template, request, jsonify, url_for, session, flash
 from flask_session import Session
 # from cs50 import SQL
@@ -10,6 +9,8 @@ from flask_mail import Mail, Message
 import os
 from random import randint
 from datetime import timedelta
+from dbObjects import Student, Course, Major
+# from cryptography.fernet import Fernet
 
 
 # Application Configurations
@@ -37,114 +38,18 @@ COURSES = None
 message = ''
 
 
-class Student(db.Model):
-    __tablename__ = 'Student'
-    sID = db.Column(db.Integer, primary_key=True)
-    sEmail = db.Column(db.String(200), nullable=False)
-    sFName = db.Column(db.String(200), nullable=True)
-    sLName = db.Column(db.String(200), nullable=True)
-    sPassword = db.Column(db.String(200), nullable=False)
-
-    def __init__(self, email, password, fname, lname):
-        self.sEmail = email
-        self.sPassword = password
-        self.sFName = fname
-        self.sLName = lname
-
-    def __repr__(self):
-        return self.sID
-
-
-class Course(db.Model):
-    __tablename__ = 'Course'
-    cID = db.Column(db.Integer, primary_key=True)
-    cCode = db.Column(db.String(10), nullable=False)  # IT383
-    cName = db.Column(db.String(200), nullable=False)  # Operating Systems
-    # Grade 4=A, 3.5=B, etc
-    cGrade = db.Column(db.Float, nullable=True)
-    # 1 = True 0 = False
-    cTextbook = db.Column(db.Float, nullable=True)
-    cOnline = db.Column(db.Float, nullable=True)
-    cCredits = db.Column(db.Integer, nullable=False)
-    # 1-5 scale 5 = most difficult
-    cDifficulty = db.Column(db.Float, nullable=True)
-    # skill suggestions
-    cSkill = db.Column(db.String(200), nullable=True)
-    # avg online
-    cQuality = db.Column(db.Float, nullable=True)
-    cStudentID = db.Column("cStudentID", ForeignKey(
-        'Student.sID'), nullable=False)
-
-    cStatus = db.Column(db.String(4), nullable=True)
-
-    def __init__(self, studentID, code, name, credits):
-        self.cStudentID = studentID
-        self.cCode = code
-        self.cName = name
-        self.cCredits = credits
-
-    def __repr__(self):
-        return self.cCode + " - " + self.cName
-
-
-class CourseBank(db.Model):
-    cID = db.Column(db.Integer, primary_key=True)
-    cDept = db.Column(db.String(200), nullable=False)  # IT
-    cCode = db.Column(db.String(20), nullable=False)  # 383
-    cName = db.Column(db.String(200), nullable=False)  # Operating Systems
-    cCredits = db.Column(db.String(20), nullable=False)
-    cDesc = db.Column(db.String(200), nullable=False)
-
-    def __init__(self, dept,code,name,credits,desc):
-        self.cDept = dept
-        self.cCode = code
-        self.cName = name
-        self.cCredits = credits
-        self.cDesc = desc
-
-
-# class CourseList(db.Model):
-#     __tablename__ = 'CourseList'
-#     clID = db.Column(db.Integer, primary_key=True)
-#     clStudentID = db.Column("clStudentID", ForeignKey(
-#         'Student.sID'), nullable=False)
-#     clCourseID = db.Column("clCourseID", ForeignKey(
-#         'Course.cID'), nullable=False)
-#     # 1 = Inprogress (IP), 2 =  Taken (T), 3 = Planned (P)
-#     clStatus = db.Column(db.Integer, nullable=False)
-#     clGrade = db.Column(db.String, nullable=True)
-
-#     def __init__(self, stuID, courseID, status):
-#         self.clStudentID = stuID
-#         self.clCourseID = courseID
-#         self.clStatus = status
-
-#     def __repr__(self):
-#         return self.clID
-
-
-# class Data:
-#     def __init__(self, id, name, email, phone):
-#         self.id = id
-#         self.name = name
-#         self.email = email
-#         self.phone = phone
-
-
-# x = Data(1, "IT327", "email@", "3095555555")
-# # COURSES = [x]
-# user = None
-# COURSES = None
+def getGlobalUser():
+    return user
 
 
 @ app.route('/')
 def index():
     global COURSES
-
     if "email" not in session:  # Check if session doesn't exist
         return render_template("index.html")
 
     # return render_template('dashboard.html', courses=COURSES)
+    print("test")
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -239,6 +144,45 @@ def validate():
     return render_template("mainpage.html", courses=COURSES)
 
 
+@app.route('/viewmajors', methods=['GET', 'POST'])
+def viewmajors():
+    global user
+    majors = Major.query.all()
+
+
+    print("user:" + str(user.sID) + "\tuser.sMajorID: " + str(user.sMajorID))
+    
+
+    curMajor = db.session.query(Major)\
+        .filter(Major.mID == user.sMajorID).first()
+    
+    return render_template("viewmajors.html", majors=majors, curMajor=curMajor)
+
+# updates the major in the DB and displays a message reflecting that to that user
+@ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
+def selectmajor(majorID):
+    global user
+    global CORSES
+    majors = Major.query.all()
+
+    if user == None:
+        return render_template("/validate.html")
+
+    # print("before updating: " + str(user.sMajorID))
+
+    user.sMajorID = majorID
+    db.session.commit()
+
+
+    # print("after updating: " + str(user.sMajorID))
+    majorName = db.session.query(Major)\
+        .filter(Major.mID == user.sMajorID).first() # querying for row that matches the user's majorID
+    
+    print(majorName)
+    flash("Major Successfully Updated")
+    return render_template('mainpage.html', coures=COURSES)
+
+
 @ app.route('/dashboard', methods=["POST"])
 def dashboard():
     course = ''
@@ -283,32 +227,25 @@ def insert():
 @ app.route('/update/<int:id>', methods=['POST'])
 def update(id):
     global COURSES
-    # my_data = Data.query.get(request.form.get('id'))
     updateCourse = Course.query.filter_by(
         cStudentID=user.sID, cID=id).first()
 
-
-    if request.form.get('textbook'): updateCourse.cTextbook = request.form.get('textbook')
-    if request.form.get('difficulty'): updateCourse.cDifficulty = request.form.get('difficulty')
-    if request.form.get('skill'): updateCourse.cSkill = request.form.get('skill')
-    if request.form.get('quality'): updateCourse.cQuality = request.form.get('quality')
-    if request.form.get('grade'): updateCourse.cGrade = request.form.get('grade')
-    if request.form.get('status'): updateCourse.cStatus = request.form.get('status')
-    if request.form.get('online'): updateCourse.cOnline = request.form.get('online')
+    if request.form.get('textbook'):
+        updateCourse.cTextbook = request.form.get('textbook')
+    if request.form.get('difficulty'):
+        updateCourse.cDifficulty = request.form.get('difficulty')
+    if request.form.get('skill'):
+        updateCourse.cSkill = request.form.get('skill')
+    if request.form.get('quality'):
+        updateCourse.cQuality = request.form.get('quality')
+    if request.form.get('grade'):
+        updateCourse.cGrade = request.form.get('grade')
+    if request.form.get('status'):
+        updateCourse.cStatus = request.form.get('status')
+    if request.form.get('online'):
+        updateCourse.cOnline = request.form.get('online')
     db.session.commit()
 
-    # db.session.query(Course)\
-    #     .filter(Course.cStudentID == user.sID, Course.cID == request.form.get('id'))\
-    #     .update({
-    #         Course.cTextbook: request.form['textbook'],
-    #         Course.cDifficulty: request.form['difficulty'],
-    #         Course.cSkill: request.form['difficulty'],
-    #         Course.cQuality: request.form['quality'],
-    #         Course.cGrade: request.form['grade']
-    #     })
-    # db.session.commit()
-
-    # db.session.commit()
     flash("Course Updated Successfully")
 
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
@@ -332,53 +269,11 @@ def delete(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
-@app.route('/viewmajors', methods=['GET', 'POST'])
-def viewmajors():
-    global user
-    majors = Major.query.all()
+@ app.route('/mainpage')
+def mainpage():
+    global COURSES
+    return render_template('mainpage.html', courses=COURSES)
 
-
-    print("user:" + str(user.sID) + "\tuser.sMajorID: " + str(user.sMajorID))
-    
-
-    curMajor = db.session.query(Major)\
-        .filter(Major.mID == user.sMajorID).first()
-    
-    return render_template("viewmajors.html", majors=majors, curMajor=curMajor)
-
-# updates the major in the DB and displays a message reflecting that to that user
-@ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
-def selectmajor(majorID):
-    global user
-    global CORSES
-    majors = Major.query.all()
-
-    if user == None:
-        return render_template("/validate.html")
-
-    # print("before updating: " + str(user.sMajorID))
-
-    user.sMajorID = majorID
-    db.session.commit()
-
-
-    # print("after updating: " + str(user.sMajorID))
-    majorName = db.session.query(Major)\
-        .filter(Major.mID == user.sMajorID).first() # querying for row that matches the user's majorID
-    
-    print(majorName)
-    flash("Major Successfully Updated")
-    return render_template('mainpage.html', coures=COURSES)
-    
 if __name__ == "__main__":
     db.create_all()
-
-    # with open("IT 326 course list.csv", "r") as f:
-    #     reader = csv.reader(f, delimiter=",")
-    #     for line in reader:
-    #         dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
-    #         newCourse = CourseBank(dept, code, name, credits, desc)
-    #         db.session.add(newCourse)
-    # db.session.commit()
-
     app.run(debug=True)
