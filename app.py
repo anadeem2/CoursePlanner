@@ -385,6 +385,11 @@ def selectmajor(majorID):
     flash("Major Successfully Updated")
     return render_template('mainpage.html', courses=COURSES)
 
+@ app.route('/mainpage')
+def mainpage():
+    courses = Course.query.filter_by(cStudentID=user.sID).all()
+    return render_template('mainpage.html', courses=courses)
+
 def createMajors():
     
     # undecided = Major(mName='Undecided')
