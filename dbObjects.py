@@ -136,7 +136,8 @@ class CourseBank(db.Model):
 #         self.name = name
 #         self.email = email
 #         self.phone = phone
-#
+
+
 # def testMajor():
 #     db.session.query(Major).delete() #  nvm just try this tehn
 #     comSci = Major(mName='Computer Science')
@@ -155,7 +156,7 @@ class CourseBank(db.Model):
 # def testStudent():
 #     # db.session.query(Student).delete()
 #     # db.session.execute("ALTER TABLE Student ADD sMajorID Integer")
-#     # db.session.commit()
+#     db.session.commit()
 #     tjfreie = Student(email='tjfreie.ilstu.edu',password='password',fname='Tom',lname='Freier')
 #     db.session.add(tjfreie)
 #     db.session.commit()

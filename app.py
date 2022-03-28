@@ -29,7 +29,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
 # # Intitializations
 # db = SQL('sqlite:///planner.db')
 mail = Mail(app)
@@ -48,8 +47,8 @@ def index():
     if "email" not in session:  # Check if session doesn't exist
         return render_template("index.html")
 
-    # return render_template('dashboard.html', courses=COURSES)
-    print("test")
+    user = Student.query.filter_by(sEmail=session['email']).first()
+    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -143,54 +142,44 @@ def validate():
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
-@app.route('/viewmajors', methods = ['GET','POST'])
-def viewmajors():   
+
+@app.route('/viewmajors', methods=['GET', 'POST'])
+def viewmajors():
     global user
     majors = Major.query.all()
 
+
+    print("user:" + str(user.sID) + "\tuser.sMajorID: " + str(user.sMajorID))
+    
+
     curMajor = db.session.query(Major)\
         .filter(Major.mID == user.sMajorID).first()
+    
+    return render_template("viewmajors.html", majors=majors, curMajor=curMajor)
 
-    return render_template("viewmajors.html",majors=majors,curMajor=curMajor)
 
 # updates the major in the DB and displays a message reflecting that to that user
-@ app.route('/updatemajor/<int:id>', methods=['GET','POST'])
-def selectmajor(id):
+@ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
+def selectmajor(majorID):
     global user
+    global COURSES
     majors = Major.query.all()
 
     if user == None:
         return render_template("/validate.html")
 
-    updateMajor = Student.query.filter_by(sID=user.sID).first()
-    updateMajor.sMajorID = id
+    # print("before updating: " + str(user.sMajorID))
 
-    majorName = db.session.query(Major).filter(Major.mID == id).first()
-
+    user.sMajorID = majorID
     db.session.commit()
+
+    # print("after updating: " + str(user.sMajorID))
+    majorName = db.session.query(Major)\
+        .filter(Major.mID == user.sMajorID).first() # querying for row that matches the user's majorID
+    
+    print(majorName)
     flash("Major Successfully Updated")
-    return render_template('viewmajors.html',majors=majors,curMajor=majorName)
-
-
-
-@ app.route('/dashboard', methods=["POST"])
-def dashboard():
-    course = ''
-    status = ''
-
-    # INSERT into mySQL database
-    if (request.form['save'] == ("saveCourse")):
-        course = request.form['save']
-        course = request.form['status']
-
-        db.execute("INSERT INTO CourseList(cID, sID, clType) VALUES(?,?,?)", int(
-            course), sID, status)
-
-        message = "Record has been created!"
-        messageType = "success"
-        courses = db.execute(
-            "SELECT * FROM INTO CourseList(cID, sID, clType) VALUES(?,?,?)")
-        return render_template('dashboard.html', courses=courses)
+    return render_template('mainpage.html', coures=COURSES)
 
 
 # this route is for inserting data to mysql database via html forms
@@ -220,16 +209,21 @@ def update(id):
     updateCourse = Course.query.filter_by(
         cStudentID=user.sID, cID=id).first()
 
-
-    if request.form.get('textbook'): updateCourse.cTextbook = request.form.get('textbook')
-    if request.form.get('difficulty'): updateCourse.cDifficulty = request.form.get('difficulty')
-    if request.form.get('skill'): updateCourse.cSkill = request.form.get('skill')
-    if request.form.get('quality'): updateCourse.cQuality = request.form.get('quality')
-    if request.form.get('grade'): updateCourse.cGrade = request.form.get('grade')
-    if request.form.get('status'): updateCourse.cStatus = request.form.get('status')
-    if request.form.get('online'): updateCourse.cOnline = request.form.get('online')
+    if request.form.get('textbook'):
+        updateCourse.cTextbook = request.form.get('textbook')
+    if request.form.get('difficulty'):
+        updateCourse.cDifficulty = request.form.get('difficulty')
+    if request.form.get('skill'):
+        updateCourse.cSkill = request.form.get('skill')
+    if request.form.get('quality'):
+        updateCourse.cQuality = request.form.get('quality')
+    if request.form.get('grade'):
+        updateCourse.cGrade = request.form.get('grade')
+    if request.form.get('status'):
+        updateCourse.cStatus = request.form.get('status')
+    if request.form.get('online'):
+        updateCourse.cOnline = request.form.get('online')
     db.session.commit()
-
 
     flash("Course Updated Successfully")
 
@@ -254,6 +248,13 @@ def delete(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
+
+@ app.route('/mainpage')
+def mainpage():
+    global COURSES
+    return render_template('mainpage.html', courses=COURSES)
+
+
 if __name__ == "__main__":
     # db.session.query(Major).delete()
     # comSci = Major(mName='Computer Science', cDept="IT")
@@ -273,7 +274,7 @@ if __name__ == "__main__":
     #         newCourse = CourseBank(dept, code, name, credits, desc)
     #         db.session.add(newCourse)
 
-    db.session.commit()
+    # db.session.commit()
     db.create_all()
 
     # courses = CourseBank.query.all()
@@ -282,9 +283,13 @@ if __name__ == "__main__":
     #           c.cCode,
     #           c.cName,
     #           c.cCredits)
-
+    #
     # majors = Major.query.all()
     # for maj in majors:
     #     print(maj.mID, maj.mName)
+
+    # students = Student.query.all()
+    # for s in students:
+    #     print(s.sMajorID)
 
     app.run(debug=True)
