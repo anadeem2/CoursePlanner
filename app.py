@@ -131,7 +131,7 @@ def index():
         return render_template("index.html")
 
     user = session['user']
-    COURSES = Course.query.filter_by(cStudentID=session['user'].sID).all()
+    COURSES = Course.query.filter_by(cStudentID=session['user'].sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -249,7 +249,7 @@ def validate():
         session["user"] = user
 
 
-    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -268,7 +268,7 @@ def insert():
     db.session.commit()
 
     flash("Course Inserted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -298,7 +298,7 @@ def update(id):
     db.session.commit()
 
     flash("Course Updated Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -313,7 +313,7 @@ def delete(id):
     db.session.commit()
 
     flash("Course Deleted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
 
 
