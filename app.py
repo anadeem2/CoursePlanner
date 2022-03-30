@@ -174,6 +174,27 @@ def signup():
     return render_template("signup.html")
 
 
+@ app.route('/contactUs')  # Contact Us page
+def contactUs():
+    return render_template("contactUs.html")
+
+
+@ app.route('/contacted', methods=["POST"])  # Contacted Page
+def contacted():
+    email_subject = request.form.get("subject")
+    email_message = request.form.get("message")
+    admin_email = "developerit326@gmail.com"
+
+    message = Message ("""\
+        Subject:  {subject}""".format(subject=email_subject), recipients=[admin_email])
+    message.body = " Message: {message}".format(message=email_message)
+
+    # Send confirmaton email
+    mail.send(message)
+    flash("Feedback sent!")
+    return render_template("mainpage.html")  # Maybe redirect to mainpage
+
+
 @ app.route('/registered', methods=["POST"])  # Registered Page
 def registered():
     user_email = request.form.get("email")
