@@ -130,6 +130,7 @@ def index():
     if "user" not in session:  # Check if session doesn't exist
         return render_template("index.html")
 
+    user = session['user']
     COURSES = Course.query.filter_by(cStudentID=session['user'].sID).all()
     return render_template("mainpage.html", courses=COURSES)
 
@@ -352,7 +353,7 @@ def mainpage():
     global user
     global COURSES
 
-    COURSES = Course.query.filter_by(cStudentID=user.sID).all()
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template('mainpage.html', courses=COURSES)
 
 
