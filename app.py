@@ -179,6 +179,10 @@ def registered():
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
 
+    if not user_email or not user_pass:
+        flash("Invalid credentials")
+        return redirect(url_for("signup"))
+
     exists = Student.query.filter_by(sEmail=user_email).first()
     if not exists:
         usr = Student(email=user_email, password=user_pass, fname='', lname='')
@@ -203,6 +207,10 @@ def validate():
 
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
+
+    if not user_email or not user_pass:
+        flash("Invalid credentials")
+        return redirect(url_for("signup"))
 
     user = Student.query.filter_by(sEmail=user_email).first()
     if not user:
