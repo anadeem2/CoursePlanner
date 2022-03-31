@@ -72,9 +72,10 @@ class Course(db.Model):
     cSkill = db.Column(db.String(200), nullable=True)
     # avg online
     cQuality = db.Column(db.Float, nullable=True)
-    cStudentID = db.Column("cStudentID", ForeignKey(
-        'Student.sID'), nullable=False)
-
+    cStudentID = db.Column("cStudentID", ForeignKey('Student.sID', ondelete='CASCADE'), nullable=False)
+    
+    studentRel = db.relationship("Student", cascade = "all,delete")  #try now rip
+    #rip indeed
     cStatus = db.Column(db.String(4), nullable=True)
 
     def __init__(self, studentID, code, name, credits):
@@ -139,12 +140,14 @@ class CourseBank(db.Model):
 
 @ app.route('/')
 def index():
+    global user
     global COURSES
 
-    if "email" not in session:  # Check if session doesn't exist
+    if "user" not in session:  # Check if session doesn't exist
         return render_template("index.html")
 
-    # return render_template('dashboard.html', courses=COURSES)
+    user = session['user']
+    COURSES = Course.query.filter_by(cStudentID=session['user'].sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
 
 
@@ -333,6 +336,27 @@ def delete(id):
     return render_template("mainpage.html", courses=COURSES)
 
 
+@ app.route('/deleteUser/')
+def deleteUser():
+    global user
+    global COURSES
+    
+    courses = Course.query.all()
+    for c in courses:
+        if c.cStudentID==user.sID:
+            db.session.delete(c)
+
+
+    Student.query.filter_by(sID=user.sID).delete()
+    COURSES=user=None
+    
+    db.session.commit() #ok try
+    
+    return redirect(url_for("login")) 
+
+
+    
+
 if __name__ == "__main__":
     db.create_all()
 
@@ -349,22 +373,22 @@ if __name__ == "__main__":
     # db.session.commit()
     # db.session.commit()
     
-    db.session.query(CourseBank).delete()
-    with open("IT 326 course list.csv", "r") as f:
-        reader = csv.reader(f, delimiter=",")
-        for line in reader:
-            dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
-            newCourse = CourseBank(dept, code, name, credits, desc)
-            db.session.add(newCourse)
-    db.session.commit()
+    # db.session.query(CourseBank).delete()
+    # with open("IT 326 course list.csv", "r") as f:
+    #     reader = csv.reader(f, delimiter=",")
+    #     for line in reader:
+    #         dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
+    #         newCourse = CourseBank(dept, code, name, credits, desc)
+    #         db.session.add(newCourse)
+    # db.session.commit()
     
-    db.create_all()
+    # db.create_all()
     
-    courses = CourseBank.query.all()
-    for c in courses[1:]:
-        print(c.cDept,
-            c.cCode,
-            c.cName,
-            c.cCredits)
+    # courses = CourseBank.query.all()
+    # for c in courses[1:]:
+    #     print(c.cDept,
+    #         c.cCode,
+    #         c.cName,
+    #         c.cCredits)
             
-    
+    app.run(debug=True)

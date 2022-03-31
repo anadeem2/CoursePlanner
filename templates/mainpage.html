@@ -13,12 +13,14 @@
 
 <div class="container-fluid">
    <a class="btn btn-primary" href="/logout">Log out </a>
+   <a href="/deleteUser/" class="btn btn-danger btn-xs float-right" onclick="return confirm('Are you sure you want to delete your account?')">Delete User</a>
+
    <div class="row">
       <div class="col md-12">
 
          <div class="jumbotron p-3">
 
-            <h2>Course <b>Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
+            <h2><b>Course Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
                   data-target="#mymodal">Add Course </button> </h2>
 
 
@@ -60,10 +62,10 @@
                      <a href="/delete/{{row.cID}}" class="btn btn-danger btn-xs"
                         onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
 
-
                   </td>
 
                </tr>
+
 
 
                <!-- Modal Edit Employee-->
