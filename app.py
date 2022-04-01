@@ -201,14 +201,16 @@ def contacted():
 def registered():
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
+    user_fname = request.form.get("fname")
+    user_lname = request.form.get("lname")
 
-    if not user_email or not user_pass:
+    if not (user_email and user_pass and user_fname and user_lname):
         flash("Invalid credentials")
         return redirect(url_for("signup"))
 
     exists = Student.query.filter_by(sEmail=user_email).first()
     if not exists:
-        usr = Student(email=user_email, password=user_pass, fname='', lname='')
+        usr = Student(email=user_email, password=user_pass, fname=user_fname, lname=user_lname)
         db.session.add(usr)
         db.session.commit()
     else:
