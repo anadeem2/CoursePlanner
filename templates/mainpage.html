@@ -97,8 +97,6 @@
 
                 <!--                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}"> -->
                                  <select name="grade">
-
-
                                     <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</option>
                                     <option value="4">A</option>
                                     <option value="3.5">B</option>
@@ -118,14 +116,10 @@
                                  <label>Textbook Required:</label> <br>
 
 <!--                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">-->
-
-                                 <select name="textbook">
-                                    <option disabled selected value="{{row.cTextbook}}">{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                 </select>
-
-
+                                 <input type="radio" id="yes" name="textbook" value="1">
+                                 <label for="yes">Yes</label><br>
+                                 <input type="radio" id="no" name="textbook" value="0">
+                                 <label for="no">No</label><br>
                               </div>
 
                               <div class="form-group">
@@ -134,11 +128,10 @@
                                  <label>Is Online:</label> <br>
 
 <!--                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">-->
-                                 <select name="online">
-                                    <option disabled selected value="{{row.cOnline}}">{{"Yes" if row.cOnline==1 else "No" if row.cOnline==0 else "None"}}</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                 </select>
+                                 <input type="radio" id="online" name="online" value="1">
+                                 <label for="yes">Yes</label><br>
+                                 <input type="radio" id="inperson" name="online" value="0">
+                                 <label for="inperson">No</label><br>
 
                               </div>
 
@@ -149,14 +142,9 @@
                                  <label>Class Difficulty:</label> <br>
 
 <!--                                  <input type="number" class="form-control" name="difficulty" value="{{row.cDifficulty}}">-->
-                                 <select name="difficulty">
-                                    <option disabled selected value="{{row.cDifficulty}}">{{row.cDifficulty}}</option>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="3">3</option>
-                                    <option value="2">2</option>
-                                    <option value="1">1</option>
-                                 </select>
+                                 <label for="difficulty">Difficulty (1:Easy->5:Hard)        </label>
+                                 <input selected value="{{row.cDifficulty if row.cDifficulty else None}}" type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
+                                 <output>{{row.cDifficulty}}</output>
 
                               </div>
 
@@ -166,14 +154,10 @@
                                  <label>Class Quality:</label> <br>
 
 <!--                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">-->
-                                 <select name="quality">
-                                    <option disabled selected value="{{row.cQuality}}">{{row.cQuality}}</option>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="3">3</option>
-                                    <option value="2">2</option>
-                                    <option value="1">1</option>
-                                 </select>
+                                  <label for="quality">Quality (1:Bad->5:Great)</label>
+                                 <input selected value="{{row.cQuality if row.cQuality else None}}" type="range" id="quality" name="quality" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
+                                 <output>{{row.cQuality}}</output>
+
 
                               </div>
 
