@@ -40,6 +40,7 @@ class Student(db.Model):
     sLName = db.Column(db.String(200), nullable=True)
     sPassword = db.Column(db.String(200), nullable=False)
     sMajorID = db.Column(db.Integer, nullable=False)
+    # course = db.relationship("Course", cascase="all, delete")                      Try this later
     # sMajorID =  db.Column("sMajorID", ForeignKey('Major.mID'), nullable=False)
 
     def __init__(self, email, password, fname, lname, majorID=0):
