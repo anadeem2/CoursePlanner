@@ -118,12 +118,10 @@
                                  <label>Textbook Required:</label> <br>
 
 <!--                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">-->
-
-                                 <select name="textbook">
-                                    <option disabled selected value="{{row.cTextbook}}">{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                 </select>
+                                 <input type="radio" id="yes" name="textbook" value="1">
+                                 <label for="yes">Yes</label><br>
+                                 <input type="radio" id="no" name="textbook" value="0">
+                                 <label for="no">No</label><br>
 
 
                               </div>
@@ -134,6 +132,10 @@
                                  <label>Is Online:</label> <br>
 
 <!--                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">-->
+                                 <input type="radio" id="online" name="online" value="1">
+                                 <label for="yes">Yes</label><br>
+                                 <input type="radio" id="inperson" name="online" value="0">
+                                 <label for="inperson">No</label><br>
                                  <select name="online">
                                     <option disabled selected value="{{row.cOnline}}">{{"Yes" if row.cOnline==1 else "No" if row.cOnline==0 else "None"}}</option>
                                     <option value="1">Yes</option>
@@ -149,14 +151,9 @@
                                  <label>Class Difficulty:</label> <br>
 
 <!--                                  <input type="number" class="form-control" name="difficulty" value="{{row.cDifficulty}}">-->
-                                 <select name="difficulty">
-                                    <option disabled selected value="{{row.cDifficulty}}">{{row.cDifficulty}}</option>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="3">3</option>
-                                    <option value="2">2</option>
-                                    <option value="1">1</option>
-                                 </select>
+                                 <label for="difficulty">Difficulty (1 being easy, 5 being very difficult)        </label>
+                                 <input type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
+                                 <output>rating</output> 
 
                               </div>
 
@@ -166,14 +163,10 @@
                                  <label>Class Quality:</label> <br>
 
 <!--                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">-->
-                                 <select name="quality">
-                                    <option disabled selected value="{{row.cQuality}}">{{row.cQuality}}</option>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="3">3</option>
-                                    <option value="2">2</option>
-                                    <option value="1">1</option>
-                                 </select>
+                                  <label for="quality">Quality (1 being terrible, 5 being great)</label>
+                                 <input type="range" id="quality" name="quality" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
+                                 <output>rating</output>
+
 
                               </div>
 
