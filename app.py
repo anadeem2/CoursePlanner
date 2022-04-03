@@ -40,7 +40,7 @@ class Student(db.Model):
     sLName = db.Column(db.String(200), nullable=True)
     sPassword = db.Column(db.String(200), nullable=False)
     sMajorID = db.Column(db.Integer, nullable=False)
-    # course = db.relationship("Course", cascase="all, delete")                      Try this later
+    course = db.relationship("Course", cascade="all, delete")
     # sMajorID =  db.Column("sMajorID", ForeignKey('Major.mID'), nullable=False)
 
     def __init__(self, email, password, fname, lname, majorID=0):
@@ -74,10 +74,9 @@ class Course(db.Model):
     cSkill = db.Column(db.String(200), nullable=True)
     # avg online
     cQuality = db.Column(db.Float, nullable=True)
-    cStudentID = db.Column("cStudentID", ForeignKey(
-        'Student.sID'), nullable=False)
-
+    #IP/Taken/Planned
     cStatus = db.Column(db.String(4), nullable=True)
+    cStudentID = db.Column("cStudentID", ForeignKey('Student.sID', ondelete='CASCADE'), nullable=False) #FK
 
     def __init__(self, studentID, code, name, credits):
         self.cStudentID = studentID
@@ -174,6 +173,16 @@ def forgot():
 @ app.route('/signup')  # Signup page
 def signup():
     return render_template("signup.html")
+
+
+@app.route('/deleteUser/')
+def deleteUser():
+    global user
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect(url_for("logout"))
 
 
 @ app.route('/contactUs')  # Contact Us page
@@ -320,7 +329,6 @@ def delete(id):
     return render_template("mainpage.html", courses=COURSES)
 
 
-
 @app.route('/viewmajors', methods=['GET', 'POST'])
 def viewmajors():
     global user
@@ -393,6 +401,8 @@ def createCourseBank():
               c.cCode,
               c.cName,
               c.cCredits)
+
+
 
 
 if __name__ == "__main__":
