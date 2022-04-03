@@ -179,9 +179,13 @@ def signup():
 def deleteUser():
     global user
 
+    message = Message("Your account has been successfully deleted.", recipients=[user.sEmail])
+    mail.send(message)
+
     db.session.delete(user)
     db.session.commit()
 
+    flash("Account removed.")
     return redirect(url_for("logout"))
 
 
