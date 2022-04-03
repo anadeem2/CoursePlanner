@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+<!--EXTEND LAYOUT FILE-->
+
+{% block body %}
+<!--Code goes between body blocks-->
+<!-- Bootstrap references -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link href="../static/css/signin.css" rel="stylesheet">
+
+<body class="text-center">
+
+    <main class="form-signin">
+        <img class="mb-4" src="../static/images/1982830.jpg" alt="" width="60%" height="60%">
+        <h1 class="h3 mb-3 fw-normal">Home Page</h1>
+        <a type="submit" class="btn btn-primary" name="login" action="/login" href="/login">Login</a>
+        <a type="submit" class="btn btn-primary" name="signup" action="/signup" href="/signup">SignUp</a>
+    </main>
+</body>
+
+{% endblock %}
