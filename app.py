@@ -75,7 +75,6 @@ class Course(db.Model):
     cQuality = db.Column(db.Float, nullable=True)
     cStudentID = db.Column("cStudentID", ForeignKey(
         'Student.sID'), nullable=False)
-
     cStatus = db.Column(db.String(4), nullable=True)
 
     def __init__(self, studentID, code, name, credits):
@@ -87,6 +86,22 @@ class Course(db.Model):
     def __repr__(self):
         return self.cCode + " - " + self.cName
 
+# class MajorRequirement(db.Model):
+#     __tablename__ = 'MajorRequirement'
+#     # rID = db.Column(db.Integer, primary_key=True)
+#     majorID = db.Column("reqMajorID", ForeignKey(
+#         'Major.mID'), primary_key=True, nullable=False)
+#     # courseID = db.Column("reqCourseID", ForeignKey(
+#     #     'Course.cID'), nullable=False)
+#     majorCourseReq = db.relationship("Course")
+
+#     def __init__(self, majorID):
+#         self.majorID = majorID
+    
+#     def __repr__():
+#         # print(str(majorID) + "req: " + str(courseID))
+#         print(majorID)
+    
 
 class CourseBank(db.Model):
     cID = db.Column(db.Integer, primary_key=True)
@@ -107,7 +122,6 @@ class Major(db.Model):
     __tablename__ = 'Major'
     mID = db.Column(db.Integer, primary_key = True)
     mName = db.Column(db.String(50), nullable=False) # Computer Science
-
     def __int__(self, majorName):
         self.mName = majorName
     
@@ -247,7 +261,6 @@ def validate():
         session.permanent = True
         session["email"] = request.form.get("email")
 
-    # return render_template('dashboard.html', courses=COURSES)
     COURSES = Course.query.filter_by(cStudentID=userID).all()
     return render_template("mainpage.html", courses=COURSES)
 
@@ -310,18 +323,6 @@ def update(id):
     if request.form.get('online'): updateCourse.cOnline = request.form.get('online')
     db.session.commit()
 
-    # db.session.query(Course)\
-    #     .filter(Course.cStudentID == user.sID, Course.cID == request.form.get('id'))\
-    #     .update({
-    #         Course.cTextbook: request.form['textbook'],
-    #         Course.cDifficulty: request.form['difficulty'],
-    #         Course.cSkill: request.form['difficulty'],
-    #         Course.cQuality: request.form['quality'],
-    #         Course.cGrade: request.form['grade']
-    #     })
-    # db.session.commit()
-
-    # db.session.commit()
     flash("Course Updated Successfully")
 
     COURSES = Course.query.filter_by(cStudentID=user.sID).all()
@@ -406,15 +407,15 @@ def createMajors():
     # db.session.commit()
     majors = Major.query.all()
     for major in majors:
-        print(major) 
+        print(major)         
 
 if __name__ == "__main__":
+    # db.session.execute("""DROP TABLE course""")
+
     db.create_all()
     
-    db.session.commit()
-    # createMajors()
-    # db.session.query(Major).delete()
-    # db.session.query(Student).delete()
+    db.session.commit()    
+
 
     # with open("IT 326 course list.csv", "r") as f:
     #     reader = csv.reader(f, delimiter=",")
@@ -422,6 +423,6 @@ if __name__ == "__main__":
     #         dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
     #         newCourse = CourseBank(dept, code, name, credits, desc)
     #         db.session.add(newCourse)
-    # db.session.commit()
+    db.session.commit()
 
     app.run(debug=True)

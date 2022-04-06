@@ -36,10 +36,26 @@ c = connection.cursor()
 #                 cName TEXT,
 #                 PRIMARY KEY(cID)) """)
 
+
 connection.commit()
 connection.close()
 
 
+# class MajorRequirement(db.Model):
+#     __tablename__ = 'MajorRequirement'
+#     # rID = db.Column(db.Integer, primary_key=True)
+#     majorID = db.Column("reqMajorID", ForeignKey(
+#         'Major.mID'), primary_key=True, nullable=False)
+#     # courseID = db.Column("reqCourseID", ForeignKey(
+#     #     'Course.cID'), nullable=False)
+#     majorCourseReq = db.relationship("Course")
+
+#     def __init__(self, majorID):
+#         self.majorID = majorID
+    
+#     def __repr__():
+#         # print(str(majorID) + "req: " + str(courseID))
+#         print(majorID)
 
 # class Student(db.Model):
 #     sID = db.Column(db.Integer, pirmary_key=True)
