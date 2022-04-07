@@ -378,13 +378,16 @@ def selectmajor(majorID):
     user = Student.query.filter_by(sID=user.sID).first()
     return render_template('mainpage.html', courses=COURSES)
 
-@ app.route('/viewcourses')
+@app.route('/viewcourses', methods=['GET', 'POST'])
 def viewcourses():
     global user
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
+    global COURSES
 
+    coursebank = CourseBank.query.all()
 
-    return render_template('viewcourses.html', courses=COURSES)
+    
+
+    return render_template("viewcourses.html", coursebank=coursebank)
 
 @ app.route('/mainpage')
 def mainpage():

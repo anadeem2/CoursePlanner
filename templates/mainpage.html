@@ -251,20 +251,15 @@
                      <form action="{{url_for('insert')}}" method="POST">
 
 
-                        <div id="checkboxes">
-                           <label>some label</label>
-                           <tbody id="myTable">
-                              {% for course in COURSES %}
-                              <tr>
-                                  
-                                  <td>
-                                    {{course.cName}}
-                                    <input type="checkbox"> {{course.cName}}
-                                 </td>
-                              </tr>
-                              {% endfor %}
-                         </div>
-                        
+                        <div class="form-group">
+
+
+                           <label>Code:</label>
+                           <input type="text" class="form-control" name="code" required="1">
+
+
+                        </div>
+
 
                         <div class="form-group">
 
@@ -328,7 +323,7 @@
 
 
    <a class="btn btn-primary" href="/viewmajors">View Majors </a>
-
+   <a class="btn btn-primary" href="/viewcourses">Search Course Bank </a>
    <a class ="btn btn-primary" href="/contactUs">Contact Us</a>
 
 </div>
