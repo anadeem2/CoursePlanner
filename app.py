@@ -378,6 +378,13 @@ def selectmajor(majorID):
     user = Student.query.filter_by(sID=user.sID).first()
     return render_template('mainpage.html', courses=COURSES)
 
+@ app.route('/viewcourses')
+def viewcourses():
+    global user
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
+
+
+    return render_template('viewcourses.html', courses=COURSES)
 
 @ app.route('/mainpage')
 def mainpage():
@@ -431,5 +438,10 @@ if __name__ == "__main__":
     db.create_all()
     # createCourseBank()
     # createMajors()
-
+    # courses = CourseBank.query.all()
+    # for c in courses[1:]:
+    #     print(c.cDept,
+    #           c.cCode,
+    #           c.cName,
+    #           c.cCredits)
     app.run(debug=True)
