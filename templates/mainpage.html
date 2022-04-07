@@ -13,12 +13,14 @@
 
 <div class="container-fluid">
    <a class="btn btn-primary" href="/logout">Log out </a>
+   <a href="/deleteUser/" class="btn btn-danger btn-xs float-right" onclick="return confirm('Are you sure you want to delete your account?')">Delete User</a>
+
    <div class="row">
       <div class="col md-12">
 
          <div class="jumbotron p-3">
 
-            <h2>Course <b>Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
+            <h2><b>Course Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
                   data-target="#mymodal">Add Course </button> </h2>
 
 
@@ -35,7 +37,7 @@
                   <th>Difficulty</th>
                   <th>Quality</th>
                   <th>Textbook</th>
-                  <th>Skills</th>
+                  <th>Skill</th>
                   <th>Status</th>
                   <th>Online</th>
 
@@ -46,13 +48,13 @@
                <tr>
                   <td>{{row}}</td>
                   <td>{{row.cCredits}}</td>
-                  <td>{{row.cGrade}}</td>
+                  <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</td>
                   <td>{{row.cDifficulty}}</td>
                   <td>{{row.cQuality}}</td>
-                  <td>{{"Yes" if row.cTextbook == 1 else "No"}}</td>
+                  <td>{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</td>
                   <td>{{row.cSkill}}</td>
                   <td>{{row.cStatus}}</td>
-                  <td>{{"Yes" if row.cOnline == 1 else "No"}}</td>
+                  <td>{{"Yes" if row.cOnline==1 else "No" if row.cOnline==0 else "None"}}</td>
 
                   <td>
                      <a href="/update/{{row.cID}}" class="btn btn-warning btn-xs" data-toggle="modal"
@@ -60,10 +62,10 @@
                      <a href="/delete/{{row.cID}}" class="btn btn-danger btn-xs"
                         onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
 
-
                   </td>
 
                </tr>
+
 
 
                <!-- Modal Edit Employee-->
@@ -93,9 +95,17 @@
 
                                  <input type="hidden" class="form-control" name="cID" value="{{row.cID}}">
 
-                                 <label>Grade:</label>
+                                 <label>Grade:</label> <br>
 
-                                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}">
+                <!--                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}"> -->
+                                 <select name="grade">
+                                    <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</option>
+                                    <option value="4">A</option>
+                                    <option value="3.5">B</option>
+                                    <option value="2.5">C</option>
+                                    <option value="2">D</option>
+                                    <option value="1">F</option>
+                                 </select>
 
 
                               </div>
@@ -105,9 +115,50 @@
                               <div class="form-group">
 
 
-                                 <label>Textbook:</label>
+                                 <label>Textbook Required:</label> <br>
 
-                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">
+<!--                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">-->
+                                 <input type="radio" id="yes" name="textbook" value="1">
+                                 <label for="yes">Yes</label><br>
+                                 <input type="radio" id="no" name="textbook" value="0">
+                                 <label for="no">No</label><br>
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <label>Is Online:</label> <br>
+
+<!--                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">-->
+                                 <input type="radio" id="online" name="online" value="1">
+                                 <label for="yes">Yes</label><br>
+                                 <input type="radio" id="inperson" name="online" value="0">
+                                 <label for="inperson">No</label><br>
+
+                              </div>
+
+
+                              <div class="form-group">
+
+
+                                 <label>Class Difficulty:</label> <br>
+
+<!--                                  <input type="number" class="form-control" name="difficulty" value="{{row.cDifficulty}}">-->
+                                 <label for="difficulty">Difficulty (1:Easy->5:Hard)        </label>
+                                 <input selected value="{{row.cDifficulty if row.cDifficulty else None}}" type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
+                                 <output>{{row.cDifficulty}}</output>
+
+                              </div>
+
+                              <div class="form-group">
+
+
+                                 <label>Class Quality:</label> <br>
+
+<!--                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">-->
+                                  <label for="quality">Quality (1:Bad->5:Great)</label>
+                                 <input selected value="{{row.cQuality if row.cQuality else None}}" type="range" id="quality" name="quality" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
+                                 <output>{{row.cQuality}}</output>
 
 
                               </div>
@@ -115,52 +166,33 @@
                               <div class="form-group">
 
 
-                                 <label>Online:</label>
+                                 <label>Suggested Skill:</label> <br>
 
-                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">
-
-
-                              </div>
-
-
-                              <div class="form-group">
-
-
-                                 <label>Difficulty:</label>
-
-                                 <input type="number" class="form-control" name="difficulty"
-                                    value="{{row.cDifficulty}}">
-
+<!--                                 <input type="text" class="form-control" name="skill" value="{{row.cSkill}}">-->
+                                 <select name="skill">
+                                    <option disabled selected value="{{row.cSkill}}">{{row.cSkill}}</option>
+                                    <option value="Python">Python</option>
+                                    <option value="C++">C++</option>
+                                    <option value="Java">Java</option>
+                                    <option value="Recursion">Recursion</option>
+                                    <option value="Linux">Linux</option>
+                                    <option value="Git">Git</option>
+                                 </select>
 
                               </div>
 
                               <div class="form-group">
 
 
-                                 <label>Quality:</label>
+                                 <label>Current Class Status:</label> <br>
 
-                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">
-
-
-                              </div>
-
-                              <div class="form-group">
-
-
-                                 <label>Skills:</label>
-
-                                 <input type="text" class="form-control" name="skill" value="{{row.cSkill}}">
-
-
-                              </div>
-
-                              <div class="form-group">
-
-
-                                 <label>Status:</label>
-
-                                 <input type="text" class="form-control" name="status" value="{{row.cStatus}}">
-
+<!--                                 <input type="text" class="form-control" name="status" value="{{row.cStatus}}">-->
+                                 <select name="status">
+                                    <option disabled selected value="{{row.cStatus}}">{{row.cStatus}}</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Taken">Taken</option>
+                                    <option value="Planned">Planned</option>
+                                 </select>
 
                               </div>
 
@@ -291,6 +323,10 @@
 
    </div>
 
+
+   <a class="btn btn-primary" href="/viewmajors">View Majors </a>
+
+   <a class ="btn btn-primary" href="/contactUs">Contact Us</a>
 
 </div>
 
