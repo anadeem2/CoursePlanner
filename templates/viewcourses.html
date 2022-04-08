@@ -102,7 +102,7 @@
 
 
                                    <label><b>Percent Online:</b> {{db.execute('SELECT COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1)   \
-                                                                                            FROM COURSE WHERE cCode= :p1 AND cTextbook=1 GROUP BY cOnline', {'p1':c.cCode}).fetchone()}}</label>
+                                                                                            FROM COURSE WHERE cCode= :p1 AND cOnline=1 GROUP BY cOnline', {'p1':c.cCode}).fetchone()}}</label>
 
 
 
