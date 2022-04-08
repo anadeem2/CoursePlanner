@@ -2,9 +2,9 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<div class="text-center text-md-left">
-    <a id="back-button" href="/mainpage" class="btn btn-secondary btn-sm" >Back</a>
-</div>
+<form class="text-left" method="post" action="/mainpage">
+    <button type="submit" name="back-button" class="btn btn-secondary btn-sm">Back</button>
+</form>
 <section class="mb-4">
         <!--Section heading-->
         <h2 class="h1-responsive font-weight-bold text-center my-4">Contact us</h2>

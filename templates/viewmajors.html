@@ -35,11 +35,11 @@
 
 
     <div class = "container">
-      <div class="text-left">
-          <a id="back-button" href="/mainpage" class="btn btn-secondary btn-sm" >Back</a>
-      </div>
+      <form class="text-left" method="post" action="/mainpage">
+        <button type="submit" name="back-button" class="btn btn-secondary btn-sm">Back</button>
+      </form>
       
-      <h1 align="center">Major's Setting Page</12>
+      <h1 align="center">Major's Setting Page</h1>
       <h2>Select Major</h2>
       <h4>Current Major: {{curMajor}}</h4>
       <input class="form-control" id="classInput" type="text" placeholder="Search...">
@@ -59,8 +59,6 @@
                 <td>{{major.mName}}</td>
                 <td>
                   <a id="majorSelect" href="/updatemajor/{{major.mID}}" class="btn btn-warning btn-xs" >Select</a>
-      
-
                </td>
             </tr>
             {% endfor %}

@@ -150,7 +150,7 @@ def logout():
     return render_template("login.html")
 
 
-@ app.route('/forgot', methods=["POST", "GET"])  # Login page
+@ app.route('/forgot', methods=["GET"])
 def forgot():
     if request.method == 'POST':
         user_email = request.form.get("email")
@@ -189,16 +189,22 @@ def deleteUser():
     return redirect(url_for("logout"))
 
 
-@ app.route('/contactUs')  # Contact Us page
+@ app.route('/contactUs', methods=['POST'])  # Contact Us page
 def contactUs():
     return render_template("contactUs.html")
 
 
 @ app.route('/contacted', methods=["POST"])  # Contacted Page
 def contacted():
+    global COURSES
+
     email_subject = request.form.get("subject")
     email_message = request.form.get("message")
     admin_email = "developerit326@gmail.com"
+
+    if not email_subject or not email_message:
+        flash("Missing fields")
+        return render_template("contactUs.html")
 
     message = Message ("""\
         Subject:  {subject}""".format(subject=email_subject), recipients=[admin_email])
@@ -207,7 +213,7 @@ def contacted():
     # Send confirmaton email
     mail.send(message)
     flash("Feedback sent!")
-    return render_template("mainpage.html")  # Maybe redirect to mainpage
+    return render_template("mainpage.html", courses=COURSES)  # Maybe redirect to mainpage
 
 
 @ app.route('/registered', methods=["POST"])  # Registered Page
@@ -319,7 +325,7 @@ def update(id):
 
 
 # This route is for deleting course
-@ app.route('/delete/<id>/', methods=['GET', 'POST'])
+@ app.route('/delete/<id>/', methods=['POST'])
 def delete(id):
     global user
     global COURSES
@@ -333,7 +339,7 @@ def delete(id):
     return render_template("mainpage.html", courses=COURSES)
 
 
-@app.route('/viewmajors', methods=['GET', 'POST'])
+@app.route('/viewmajors', methods=['POST'])
 def viewmajors():
     global user
     global COURSES
@@ -349,7 +355,7 @@ def viewmajors():
 
 
 # updates the major in the DB and displays a message reflecting that to that user
-@ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
+@ app.route('/updatemajor/<int:majorID>', methods=['GET'])
 def selectmajor(majorID):
     global user
     global COURSES
@@ -363,7 +369,7 @@ def selectmajor(majorID):
     return render_template('mainpage.html', courses=COURSES)
 
 
-@ app.route('/mainpage')
+@ app.route('/mainpage', methods=['POST'])
 def mainpage():
     global user
     global COURSES
