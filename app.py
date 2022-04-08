@@ -60,7 +60,7 @@ class Student(db.Model):
 class Course(db.Model):
     __tablename__ = 'Course'
     cID = db.Column(db.Integer, primary_key=True)
-    cCode = db.Column(db.String(10), nullable=False)  # IT383
+    cCode = db.Column(db.String(10), nullable=False)  # 383
     cName = db.Column(db.String(200), nullable=False)  # Operating Systems
     # Grade 5 = A 1 = F
     cGrade = db.Column(db.Float, nullable=True)
@@ -325,7 +325,7 @@ def update(id):
 
 
 # This route is for deleting course
-@ app.route('/delete/<id>/', methods=['POST'])
+@ app.route('/delete/<id>/', methods=['GET'])
 def delete(id):
     global user
     global COURSES
@@ -368,6 +368,37 @@ def selectmajor(majorID):
     user = Student.query.filter_by(sID=user.sID).first()
     return render_template('mainpage.html', courses=COURSES)
 
+@app.route('/viewcourses', methods=['POST'])
+def viewcourses():
+    global user
+    global COURSES
+
+    if user.sMajorID==0:
+        flash("Must select major")
+        return render_template('mainpage.html', courses=COURSES)
+
+
+    curMajor = db.session.query(Major).filter(Major.mID==user.sMajorID).first() #Get user dept
+    coursebank = CourseBank.query.filter_by(cDept=curMajor.mDept).all() #query by dept
+
+    return render_template("viewcourses.html", coursebank=coursebank, db=db.session)
+
+
+@app.route('/insertcourse/<id>', methods=['POST'])
+def insertcourse(id):
+    global user
+    global COURSES
+
+    course = CourseBank.query.filter_by(cID=id).first()
+    newCourse = Course(user.sID, course.cCode, course.cName, course.cCredits)
+    db.session.add(newCourse)
+    db.session.commit()
+
+    flash("Course Inserted Successfully")
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
+    return render_template("mainpage.html", courses=COURSES)
+
+
 
 @ app.route('/mainpage', methods=['POST'])
 def mainpage():
@@ -400,7 +431,7 @@ def createCourseBank():
     with open("IT 326 course list.csv", "r") as f:
         reader = csv.reader(f, delimiter=",")
         for line in reader:
-            dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
+            dept, code, name, credits, desc = line[0], line[1], line[2].replace('"',''), line[3], line[5].replace('"','')
             newCourse = CourseBank(dept, code, name, credits, desc)
             db.session.add(newCourse)
     db.session.commit()
@@ -419,5 +450,4 @@ if __name__ == "__main__":
     db.create_all()
     # createCourseBank()
     # createMajors()
-
     app.run(debug=True)

@@ -9,8 +9,6 @@
 {% block body %}
 
 
-
-
 <div class="container-fluid">
    <a class="btn btn-primary" href="/logout">Log out </a>
    <a href="/deleteUser/" class="btn btn-danger btn-xs float-right" onclick="return confirm('Are you sure you want to delete your account?')">Delete User</a>
@@ -20,9 +18,11 @@
 
          <div class="jumbotron p-3">
 
-            <h2><b>Course Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
-                  data-target="#mymodal">Add Course </button> </h2>
-
+            <h2><b>Course Planner </b>
+               <form method="post" action="/viewcourses">
+                    <button type="submit" name="viewcourses-button" class="btn btn-success float-right">Search Courses</button>
+                  </form>
+            </h2>
 
 
 
@@ -257,7 +257,7 @@
 
 
                            <label>Code:</label>
-                           <input type="text" class="form-control" name="code" required="1">
+                           <input type="text" class="form-control" name="code" required="1" >
 
 
                         </div>
@@ -324,13 +324,13 @@
    </div>
 
 
-   <div style="width:400px;">
-    <div style="float: left; width: 120px">
+   <div style="width:1000px;">
+    <div style="float: left; width: 130px">
         <form method="post" action="/viewmajors">
            <button type="submit" name="viewmajor-button" class="btn btn-primary">View Majors</button>
          </form>
     </div>
-    <div style="float: left; width: 225px">
+    <div style="float: left; width: 120px">
         <form method="post" action="/contactUs">
            <button type="submit" name="contactus-button" class="btn btn-primary">Contact Us</button>
          </form>
