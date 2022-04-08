@@ -49,20 +49,16 @@
         
           <thead>
             <tr>
-              <th>Deptartment</th>
-              <th>Code</th>
-              <th>Name</th>
+              <th>Course</th>
               
             </tr>
           </thead>
           <tbody id="myTable">
             {% for course in coursebank %}
             <tr>
-                <td>{{course.cDept}}  {{course.cCode}}: {{course.cName}}</td>
+                <td>{{course.cDept}} {{course.cCode}}: {{course.cName}}</td>
                 <td>
-                  <a id="courseSelect" href="/updatecourse/{{course.mID}}" class="btn btn-warning btn-xs" >Select</a>
-      
-
+                  <a id="courseSelect" href="/insertcourse/{{course.cID}}" class="btn btn-warning btn-xs" >Select</a>
                </td>
             </tr>
             {% endfor %}

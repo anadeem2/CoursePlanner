@@ -87,22 +87,6 @@ class Course(db.Model):
     def __repr__(self):
         return self.cCode + " - " + self.cName
 
-# class MajorRequirement(db.Model):
-#     __tablename__ = 'MajorRequirement'
-#     # rID = db.Column(db.Integer, primary_key=True)
-#     majorID = db.Column("reqMajorID", ForeignKey(
-#         'Major.mID'), primary_key=True, nullable=False)
-#     # courseID = db.Column("reqCourseID", ForeignKey(
-#     #     'Course.cID'), nullable=False)
-#     majorCourseReq = db.relationship("Course")
-
-#     def __init__(self, majorID):
-#         self.majorID = majorID
-    
-#     def __repr__():
-#         # print(str(majorID) + "req: " + str(courseID))
-#         print(majorID)
-    
 
 class CourseBank(db.Model):
     cID = db.Column(db.Integer, primary_key=True)
@@ -384,10 +368,23 @@ def viewcourses():
     global COURSES
 
     coursebank = CourseBank.query.all()
-
-    
-
     return render_template("viewcourses.html", coursebank=coursebank)
+
+@app.route('/insertcourse/<id>', methods=['GET', 'POST'])
+def insertcourse(id):
+    global user
+    global COURSES
+
+    course = CourseBank.query.filter_by(cID=id).first()
+    newCourse = Course(user.sID, course.cDept + " " + course.cCode, course.cName, course.cCredits)
+    db.session.add(newCourse)
+    db.session.commit()
+
+    flash("Course Inserted Successfully")
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
+    return render_template("mainpage.html", courses=COURSES)
+
+
 
 @ app.route('/mainpage')
 def mainpage():
