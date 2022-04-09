@@ -48,7 +48,7 @@
                <tr bgcolor={{"LightSkyBlue" if row.cStatus=="Planned" else "LightGreen" if row.cStatus=="Taken" else "white"}}>
                   <td>{{row}}</td>
                   <td>{{row.cCredits}}</td>
-                  <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</td>
+                  <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.3 else "C" if row.cGrade==2.3 else "D" if row.cGrade==1.5 else "F" if row.cGrade==0 else "None"}}</td>
                   <td>{{row.cDifficulty}}</td>
                   <td>{{row.cQuality}}</td>
                   <td>{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</td>
@@ -99,12 +99,12 @@
 
                 <!--                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}"> -->
                                  <select name="grade">
-                                    <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</option>
+                                    <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.3 else "C" if row.cGrade==2.3 else "D" if row.cGrade==1.5 else "F" if row.cGrade==0 else "None"}}</option>
                                     <option value="4">A</option>
-                                    <option value="3.5">B</option>
-                                    <option value="2.5">C</option>
-                                    <option value="2">D</option>
-                                    <option value="1">F</option>
+                                    <option value="3.3">B</option>
+                                    <option value="2.3">C</option>
+                                    <option value="1.5">D</option>
+                                    <option value="0">F</option>
                                  </select>
 
 
