@@ -61,6 +61,7 @@ class Course(db.Model):
     __tablename__ = 'Course'
     cID = db.Column(db.Integer, primary_key=True)
     cCode = db.Column(db.String(10), nullable=False)  # 383
+    cDept = db.Column(db.String(10), nullable=False)
     cName = db.Column(db.String(200), nullable=False)  # Operating Systems
     # Grade 5 = A 1 = F
     cGrade = db.Column(db.Float, nullable=True)
@@ -78,14 +79,16 @@ class Course(db.Model):
     cStatus = db.Column(db.String(4), nullable=True)
     cStudentID = db.Column("cStudentID", ForeignKey('Student.sID', ondelete='CASCADE'), nullable=False) #FK
 
-    def __init__(self, studentID, code, name, credits):
+    def __init__(self, studentID, dept,code, name, credits, status='In Progress'):
         self.cStudentID = studentID
         self.cCode = code
+        self.cDept=dept
         self.cName = name
         self.cCredits = credits
+        self.cStatus=status
 
     def __repr__(self):
-        return self.cCode + " - " + self.cName
+        return self.cDept+" "+self.cCode + " - " + self.cName
 
 
 class CourseBank(db.Model):
@@ -241,7 +244,7 @@ def registered():
         "You have been successfully registered! This is a confirmation email.", recipients=[user_email])
     mail.send(message)
 
-    return render_template("login.html")  # Maybe redirect to mainpage
+    return render_template("login.html")
 
 
 @ app.route('/validate', methods=["POST"])
@@ -285,7 +288,7 @@ def insert():
     name = request.form['name']
     credits = request.form['credits']
 
-    newCourse = Course(user.sID, code, name, credits)
+    newCourse = Course(user.sID, "IT", code, name, credits)
     db.session.add(newCourse)
     db.session.commit()
 
@@ -355,7 +358,7 @@ def viewmajors():
 
 
 # updates the major in the DB and displays a message reflecting that to that user
-@ app.route('/updatemajor/<int:majorID>', methods=['GET'])
+@ app.route('/updatemajor/<int:majorID>', methods=['POST'])
 def selectmajor(majorID):
     global user
     global COURSES
@@ -390,7 +393,7 @@ def insertcourse(id):
     global COURSES
 
     course = CourseBank.query.filter_by(cID=id).first()
-    newCourse = Course(user.sID, course.cCode, course.cName, course.cCredits)
+    newCourse = Course(user.sID, course.cDept, course.cCode, course.cName, course.cCredits)
     db.session.add(newCourse)
     db.session.commit()
 
@@ -448,6 +451,6 @@ def createCourseBank():
 
 if __name__ == "__main__":
     db.create_all()
-    # createCourseBank()
-    # createMajors()
+    createCourseBank()
+    createMajors()
     app.run(debug=True)

@@ -45,7 +45,7 @@
       <input class="form-control" id="classInput" type="text" placeholder="Search...">
       <br>
       
-      <form method="post" action="/viewmajors"> 
+
         <table class="table table-bordered table-striped">
         
           <thead>
@@ -58,7 +58,9 @@
             <tr>
                 <td>{{major.mName}}</td>
                 <td>
-                  <a id="majorSelect" href="/updatemajor/{{major.mID}}" class="btn btn-warning btn-xs" >Select</a>
+                  <form method="post" action="/updatemajor/{{major.mID}}">
+                    <button type="submit" name="majorselect-button" class="btn btn-warning btn-xs">Select</button>
+                  </form>
                </td>
             </tr>
             {% endfor %}
@@ -67,8 +69,6 @@
           </tbody>
           
         </table>
-        <!-- <button class="w-100 btn btn-lg btn-primary" type="submit">Select major</button> -->
-    </form>
         
       </div>
 

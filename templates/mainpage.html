@@ -45,7 +45,7 @@
 
 
                {% for row in courses %}
-               <tr>
+               <tr bgcolor={{"LightSkyBlue" if row.cStatus=="Planned" else "LightGreen" if row.cStatus=="Taken" else "white"}}>
                   <td>{{row}}</td>
                   <td>{{row.cCredits}}</td>
                   <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</td>
@@ -60,7 +60,7 @@
                      <a href="/update/{{row.cID}}" class="btn btn-warning btn-xs" data-toggle="modal"
                         data-target="#modaledit{{row.cID}}">Edit</a>
                      <a href="/delete/{{row.cID}}" class="btn btn-danger btn-xs"
-                        onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        onclick="return confirm('Are you sure you want to delete?')">Delete</a>
 
                   </td>
 
@@ -327,7 +327,7 @@
    <div style="width:1000px;">
     <div style="float: left; width: 130px">
         <form method="post" action="/viewmajors">
-           <button type="submit" name="viewmajor-button" class="btn btn-primary">View Majors</button>
+           <button type="submit" name="viewmajor-button" class="btn btn-primary">Select Major</button>
          </form>
     </div>
     <div style="float: left; width: 120px">
