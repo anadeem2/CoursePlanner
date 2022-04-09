@@ -9,8 +9,6 @@
 {% block body %}
 
 
-
-
 <div class="container-fluid">
    <a class="btn btn-primary" href="/logout">Log out </a>
    <a href="/deleteUser/" class="btn btn-danger btn-xs float-right" onclick="return confirm('Are you sure you want to delete your account?')">Delete User</a>
@@ -20,9 +18,11 @@
 
          <div class="jumbotron p-3">
 
-            <h2><b>Course Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
-                  data-target="#mymodal">Add Course </button> </h2>
-
+            <h2><b>Course Planner </b>
+               <form method="post" action="/viewcourses">
+                    <button type="submit" name="viewcourses-button" class="btn btn-success float-right">Search Courses</button>
+                  </form>
+            </h2>
 
 
 
@@ -45,7 +45,7 @@
 
 
                {% for row in courses %}
-               <tr>
+               <tr bgcolor={{"LightSkyBlue" if row.cStatus=="Planned" else "LightGreen" if row.cStatus=="Taken" else "white"}}>
                   <td>{{row}}</td>
                   <td>{{row.cCredits}}</td>
                   <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</td>
@@ -60,7 +60,7 @@
                      <a href="/update/{{row.cID}}" class="btn btn-warning btn-xs" data-toggle="modal"
                         data-target="#modaledit{{row.cID}}">Edit</a>
                      <a href="/delete/{{row.cID}}" class="btn btn-danger btn-xs"
-                        onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        onclick="return confirm('Are you sure you want to delete?')">Delete</a>
 
                   </td>
 
@@ -237,96 +237,23 @@
          </div>
 
 
-
-         <!-- Modal Add Employee-->
-
-
-         <div id="mymodal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-               <div class="modal-content">
-                  <div class="modal-header">
-
-                     <h4 class="modal-title">Add Course</h4>
-                  </div>
-                  <div class="modal-body">
-
-                     <form action="{{url_for('insert')}}" method="POST">
-
-
-                        <div class="form-group">
-
-
-                           <label>Code:</label>
-                           <input type="text" class="form-control" name="code" required="1">
-
-
-                        </div>
-
-
-                        <div class="form-group">
-
-
-                           <label>Name:</label>
-                           <input type="text" class="form-control" name="name" required="1">
-
-
-                        </div>
-
-                        <div class="form-group">
-
-
-                           <label>Credits:</label>
-                           <input type="number" class="form-control" name="credits" required="1">
-
-
-                        </div>
-
-
-
-                        <div class="form-group">
-
-
-                           <button class="btn btn-primary" type="submit">Add Course</button>
-
-
-                        </div>
-
-
-                     </form>
-
-
-                  </div>
-
-
-                  <div class="modal-footer">
-
-
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-
-                  </div>
-
-
-               </div>
-
-
-            </div>
-
-
-         </div>
-
-
-
-
-
       </div>
 
    </div>
 
 
-   <a class="btn btn-primary" href="/viewmajors">View Majors </a>
-
-   <a class ="btn btn-primary" href="/contactUs">Contact Us</a>
+   <div style="width:1000px;">
+    <div style="float: left; width: 130px">
+        <form method="post" action="/viewmajors">
+           <button type="submit" name="viewmajor-button" class="btn btn-primary">Select Major</button>
+         </form>
+    </div>
+    <div style="float: left; width: 120px">
+        <form method="post" action="/contactUs">
+           <button type="submit" name="contactus-button" class="btn btn-primary">Contact Us</button>
+         </form>
+    </div>
+   </div>
 
 </div>
 

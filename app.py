@@ -60,7 +60,8 @@ class Student(db.Model):
 class Course(db.Model):
     __tablename__ = 'Course'
     cID = db.Column(db.Integer, primary_key=True)
-    cCode = db.Column(db.String(10), nullable=False)  # IT383
+    cCode = db.Column(db.String(10), nullable=False)  # 383
+    cDept = db.Column(db.String(10), nullable=False)
     cName = db.Column(db.String(200), nullable=False)  # Operating Systems
     # Grade 5 = A 1 = F
     cGrade = db.Column(db.Float, nullable=True)
@@ -78,14 +79,16 @@ class Course(db.Model):
     cStatus = db.Column(db.String(4), nullable=True)
     cStudentID = db.Column("cStudentID", ForeignKey('Student.sID', ondelete='CASCADE'), nullable=False) #FK
 
-    def __init__(self, studentID, code, name, credits):
+    def __init__(self, studentID, dept,code, name, credits, status='In Progress'):
         self.cStudentID = studentID
         self.cCode = code
+        self.cDept=dept
         self.cName = name
         self.cCredits = credits
+        self.cStatus=status
 
     def __repr__(self):
-        return self.cCode + " - " + self.cName
+        return self.cDept+" "+self.cCode + " - " + self.cName
 
 
 class CourseBank(db.Model):
@@ -150,7 +153,7 @@ def logout():
     return render_template("login.html")
 
 
-@ app.route('/forgot', methods=["POST", "GET"])  # Login page
+@ app.route('/forgot', methods=["GET"])
 def forgot():
     if request.method == 'POST':
         user_email = request.form.get("email")
@@ -189,16 +192,22 @@ def deleteUser():
     return redirect(url_for("logout"))
 
 
-@ app.route('/contactUs')  # Contact Us page
+@ app.route('/contactUs', methods=['POST'])  # Contact Us page
 def contactUs():
     return render_template("contactUs.html")
 
 
 @ app.route('/contacted', methods=["POST"])  # Contacted Page
 def contacted():
+    global COURSES
+
     email_subject = request.form.get("subject")
     email_message = request.form.get("message")
     admin_email = "developerit326@gmail.com"
+
+    if not email_subject or not email_message:
+        flash("Missing fields")
+        return render_template("contactUs.html")
 
     message = Message ("""\
         Subject:  {subject}""".format(subject=email_subject), recipients=[admin_email])
@@ -207,7 +216,7 @@ def contacted():
     # Send confirmaton email
     mail.send(message)
     flash("Feedback sent!")
-    return render_template("mainpage.html")  # Maybe redirect to mainpage
+    return render_template("mainpage.html", courses=COURSES)  # Maybe redirect to mainpage
 
 
 @ app.route('/registered', methods=["POST"])  # Registered Page
@@ -235,7 +244,7 @@ def registered():
         "You have been successfully registered! This is a confirmation email.", recipients=[user_email])
     mail.send(message)
 
-    return redirect(url_for("login"))  # Maybe redirect to mainpage
+    return render_template("login.html")
 
 
 @ app.route('/validate', methods=["POST"])
@@ -269,23 +278,6 @@ def validate():
     return render_template("mainpage.html", courses=COURSES)
 
 
-# this route is for inserting data to mysql database via html forms
-@ app.route('/insert', methods=['POST'])
-def insert():
-    global user
-    global COURSES
-
-    code = request.form['code']
-    name = request.form['name']
-    credits = request.form['credits']
-
-    newCourse = Course(user.sID, code, name, credits)
-    db.session.add(newCourse)
-    db.session.commit()
-
-    flash("Course Inserted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES)
 
 
 # this is our update route where we are going to update course
@@ -319,7 +311,7 @@ def update(id):
 
 
 # This route is for deleting course
-@ app.route('/delete/<id>/', methods=['GET', 'POST'])
+@ app.route('/delete/<id>/', methods=['GET'])
 def delete(id):
     global user
     global COURSES
@@ -333,7 +325,7 @@ def delete(id):
     return render_template("mainpage.html", courses=COURSES)
 
 
-@app.route('/viewmajors', methods=['GET', 'POST'])
+@app.route('/viewmajors', methods=['POST'])
 def viewmajors():
     global user
     global COURSES
@@ -349,7 +341,7 @@ def viewmajors():
 
 
 # updates the major in the DB and displays a message reflecting that to that user
-@ app.route('/updatemajor/<int:majorID>', methods=['GET', 'POST'])
+@ app.route('/updatemajor/<int:majorID>', methods=['POST'])
 def selectmajor(majorID):
     global user
     global COURSES
@@ -363,7 +355,38 @@ def selectmajor(majorID):
     return render_template('mainpage.html', courses=COURSES)
 
 
-@ app.route('/mainpage')
+@app.route('/viewcourses', methods=['POST'])
+def viewcourses():
+    global user
+    global COURSES
+
+    if user.sMajorID==0:
+        flash("Must select major")
+        return render_template('mainpage.html', courses=COURSES)
+
+
+    curMajor = db.session.query(Major).filter(Major.mID==user.sMajorID).first() #Get user dept
+    coursebank = CourseBank.query.filter_by(cDept=curMajor.mDept).all() #query by dept
+
+    return render_template("viewcourses.html", coursebank=coursebank, db=db.session)
+
+
+@app.route('/insertcourse/<id>', methods=['POST'])
+def insertcourse(id):
+    global user
+    global COURSES
+
+    course = CourseBank.query.filter_by(cID=id).first()
+    newCourse = Course(user.sID, course.cDept, course.cCode, course.cName, course.cCredits)
+    db.session.add(newCourse)
+    db.session.commit()
+
+    flash("Course Inserted Successfully")
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
+    return render_template("mainpage.html", courses=COURSES)
+
+
+@ app.route('/mainpage', methods=['POST'])
 def mainpage():
     global user
     global COURSES
@@ -394,7 +417,7 @@ def createCourseBank():
     with open("IT 326 course list.csv", "r") as f:
         reader = csv.reader(f, delimiter=",")
         for line in reader:
-            dept, code, name, credits, desc = line[0], line[1], line[2], line[3], line[5]
+            dept, code, name, credits, desc = line[0], line[1], line[2].replace('"',''), line[3], line[5].replace('"','')
             newCourse = CourseBank(dept, code, name, credits, desc)
             db.session.add(newCourse)
     db.session.commit()
@@ -413,5 +436,4 @@ if __name__ == "__main__":
     db.create_all()
     # createCourseBank()
     # createMajors()
-
     app.run(debug=True)
