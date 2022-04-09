@@ -278,23 +278,6 @@ def validate():
     return render_template("mainpage.html", courses=COURSES)
 
 
-# this route is for inserting data to mysql database via html forms
-@ app.route('/insert', methods=['POST'])
-def insert():
-    global user
-    global COURSES
-
-    code = request.form['code']
-    name = request.form['name']
-    credits = request.form['credits']
-
-    newCourse = Course(user.sID, "IT", code, name, credits)
-    db.session.add(newCourse)
-    db.session.commit()
-
-    flash("Course Inserted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES)
 
 
 # this is our update route where we are going to update course
@@ -371,6 +354,7 @@ def selectmajor(majorID):
     user = Student.query.filter_by(sID=user.sID).first()
     return render_template('mainpage.html', courses=COURSES)
 
+
 @app.route('/viewcourses', methods=['POST'])
 def viewcourses():
     global user
@@ -400,7 +384,6 @@ def insertcourse(id):
     flash("Course Inserted Successfully")
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES)
-
 
 
 @ app.route('/mainpage', methods=['POST'])
@@ -451,6 +434,6 @@ def createCourseBank():
 
 if __name__ == "__main__":
     db.create_all()
-    createCourseBank()
-    createMajors()
+    # createCourseBank()
+    # createMajors()
     app.run(debug=True)
