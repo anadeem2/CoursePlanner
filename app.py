@@ -188,6 +188,22 @@ def deleteUser():
     flash("Account removed.")
     return redirect(url_for("logout"))
 
+@app.route('/editUser/')
+def editUser():
+    global user
+
+
+
+    
+    message = Message("Your account has information has been successfully changed.", recipients=[user.sEmail])
+    mail.send(message)
+
+    
+    db.session.commit()
+
+    flash("Account information changed.")
+    return render_template("mainpage.html")
+
 
 @ app.route('/contactUs')  # Contact Us page
 def contactUs():
