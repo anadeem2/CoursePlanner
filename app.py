@@ -41,7 +41,6 @@ class Student(db.Model):
     sPassword = db.Column(db.String(200), nullable=False)
     sMajorID = db.Column(db.Integer, nullable=False)
     course = db.relationship("Course", cascade="all, delete")
-    # sMajorID =  db.Column("sMajorID", ForeignKey('Major.mID'), nullable=False)
 
     def __init__(self, email, password, fname, lname, majorID=0):
         self.sEmail = email
@@ -153,7 +152,7 @@ def logout():
     return render_template("login.html")
 
 
-@ app.route('/forgot', methods=["GET"])
+@ app.route('/forgot', methods=["GET","POST"])
 def forgot():
     if request.method == 'POST':
         user_email = request.form.get("email")
