@@ -21,7 +21,7 @@
          <div class="jumbotron p-3">
 
             <h2><b>Course Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
-                  data-target="#mymodal">Edit User </button> </h2>
+                  data-target="#mymodal">Edit User Information</button> </h2>
 
 
 
@@ -250,7 +250,7 @@
                   </div>
                   <div class="modal-body">
 
-                     <form action="{{url_for('insert')}}" method="POST">
+                     <form action="{{url_for('editUser')}}" method="POST">
 
 
                         <div class="form-group">
@@ -278,7 +278,7 @@
                         <div class="form-group">
 
 
-                           <button class="btn btn-primary" type="submit">Edit User</button>
+                           <button class="btn btn-primary" type="submit">Confirm</button>
 
 
                         </div>

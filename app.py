@@ -269,21 +269,24 @@ def validate():
     return render_template("mainpage.html", courses=COURSES)
 
 
-# this route is for inserting data to mysql database via html forms
-@ app.route('/insert', methods=['POST'])
-def insert():
+# this route is for editing user's information
+@ app.route('/editUser', methods=['GET', 'POST'])
+def editUser():
     global user
-    global COURSES
 
     user_fname = request.form.get("fname")
     user_lname = request.form.get("lname")
     
-    sFName = user_fname
-    sLName = user_lname
-    
+    editUser = Student.query.filter_by(sID=user.sID).first()
+    editUser.sFName = user_fname
+    editUser.sLName = user_lname
     db.session.commit()
+    
+    message = Message("Your account has information has been successfully changed.", recipients=[user.sEmail])
+    mail.send(message)
 
     flash("User Information edited")
+    
     return render_template("mainpage.html")
 
 
