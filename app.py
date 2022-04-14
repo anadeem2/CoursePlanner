@@ -217,7 +217,7 @@ def contacted():
     # Send confirmaton email
     mail.send(message)
     flash("Feedback sent!")
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)  # Maybe redirect to mainpage
+    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
 
 @ app.route('/registered', methods=["POST"])  # Registered Page
@@ -322,6 +322,7 @@ def delete(id):
     db.session.commit()
 
     flash("Course Deleted Successfully")
+    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 

@@ -1,8 +1,3 @@
-<!--NO LONGER BEING USED-->
-<!--NO LONGER BEING USED-->
-<!--NO LONGER BEING USED-->
-
-
 {% extends "layout.html" %}
 <!--EXTEND LAYOUT FILE-->
 
@@ -68,7 +63,7 @@
 
 
 
-               <!-- Modal Edit Employee-->
+               <!-- Edit Course-->
                <div id="modaledit{{row.cID}}" class="modal fade" role="dialog">
                   <div class="modal-dialog">
 
@@ -97,7 +92,6 @@
 
                                  <label>Grade:</label> <br>
 
-                <!--                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}"> -->
                                  <select name="grade">
                                     <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.3 else "C" if row.cGrade==2.3 else "D" if row.cGrade==1.5 else "F" if row.cGrade==0 else "None"}}</option>
                                     <option value="4">A</option>
@@ -117,7 +111,6 @@
 
                                  <label>Textbook Required:</label> <br>
 
-<!--                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">-->
                                  <input type="radio" id="yes" name="textbook" value="1">
                                  <label for="yes">Yes</label><br>
                                  <input type="radio" id="no" name="textbook" value="0">
@@ -129,7 +122,6 @@
 
                                  <label>Is Online:</label> <br>
 
-<!--                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">-->
                                  <input type="radio" id="online" name="online" value="1">
                                  <label for="yes">Yes</label><br>
                                  <input type="radio" id="inperson" name="online" value="0">
@@ -143,7 +135,6 @@
 
                                  <label>Class Difficulty:</label> <br>
 
-<!--                                  <input type="number" class="form-control" name="difficulty" value="{{row.cDifficulty}}">-->
                                  <label for="difficulty">Difficulty (1:Easy->5:Hard)        </label>
                                  <input selected value="{{row.cDifficulty if row.cDifficulty else None}}" type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
                                  <output>{{row.cDifficulty}}</output>
@@ -155,7 +146,6 @@
 
                                  <label>Class Quality:</label> <br>
 
-<!--                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">-->
                                   <label for="quality">Quality (1:Bad->5:Great)</label>
                                  <input selected value="{{row.cQuality if row.cQuality else None}}" type="range" id="quality" name="quality" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
                                  <output>{{row.cQuality}}</output>
@@ -168,7 +158,6 @@
 
                                  <label>Suggested Skill:</label> <br>
 
-<!--                                 <input type="text" class="form-control" name="skill" value="{{row.cSkill}}">-->
                                  <select name="skill">
                                     <option disabled selected value="{{row.cSkill}}">{{row.cSkill}}</option>
                                     <option value="Python">Python</option>
@@ -186,7 +175,6 @@
 
                                  <label>Current Class Status:</label> <br>
 
-<!--                                 <input type="text" class="form-control" name="status" value="{{row.cStatus}}">-->
                                  <select name="status">
                                     <option disabled selected value="{{row.cStatus}}">{{row.cStatus}}</option>
                                     <option value="In Progress">In Progress</option>
