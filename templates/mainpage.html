@@ -1,14 +1,7 @@
-<!--NO LONGER BEING USED-->
-<!--NO LONGER BEING USED-->
-<!--NO LONGER BEING USED-->
-
-
 {% extends "layout.html" %}
 <!--EXTEND LAYOUT FILE-->
 
 {% block body %}
-
-
 
 
 <div class="container-fluid">
@@ -19,11 +12,13 @@
       <div class="col md-12">
 
          <div class="jumbotron p-3">
-
-            <h2><b>Course Planner </b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
-                  data-target="#mymodal">Add Course </button> </h2>
-
-
+            <h2><b>{{name}}'s Course Planner</b>
+               <form method="post" action="/viewcourses">
+                    <button type="submit" name="viewcourses-button" class="btn btn-success float-right">Search Courses</button>
+                  </form>
+            </h2>
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+                  data-target="#mymodal">Edit User</button>
 
 
 
@@ -45,10 +40,10 @@
 
 
                {% for row in courses %}
-               <tr>
+               <tr bgcolor={{"LightSkyBlue" if row.cStatus=="Planned" else "LightGreen" if row.cStatus=="Taken" else "white"}}>
                   <td>{{row}}</td>
                   <td>{{row.cCredits}}</td>
-                  <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</td>
+                  <td>{{"A" if row.cGrade==4 else "B" if row.cGrade==3.3 else "C" if row.cGrade==2.3 else "D" if row.cGrade==1.5 else "F" if row.cGrade==0 else "None"}}</td>
                   <td>{{row.cDifficulty}}</td>
                   <td>{{row.cQuality}}</td>
                   <td>{{"Yes" if row.cTextbook==1 else "No" if row.cTextbook==0 else "None"}}</td>
@@ -60,7 +55,7 @@
                      <a href="/update/{{row.cID}}" class="btn btn-warning btn-xs" data-toggle="modal"
                         data-target="#modaledit{{row.cID}}">Edit</a>
                      <a href="/delete/{{row.cID}}" class="btn btn-danger btn-xs"
-                        onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                        onclick="return confirm('Are you sure you want to delete?')">Delete</a>
 
                   </td>
 
@@ -68,7 +63,7 @@
 
 
 
-               <!-- Modal Edit Employee-->
+               <!-- Edit Course-->
                <div id="modaledit{{row.cID}}" class="modal fade" role="dialog">
                   <div class="modal-dialog">
 
@@ -97,14 +92,13 @@
 
                                  <label>Grade:</label> <br>
 
-                <!--                 <input type="number" class="form-control" name="grade" value="{{row.cGrade}}"> -->
                                  <select name="grade">
-                                    <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.5 else "C" if row.cGrade==2.5 else "D" if row.cGrade==2 else "F" if row.cGrade==1 else "None"}}</option>
+                                    <option disabled selected value="{{row.cGrade}}">{{"A" if row.cGrade==4 else "B" if row.cGrade==3.3 else "C" if row.cGrade==2.3 else "D" if row.cGrade==1.5 else "F" if row.cGrade==0 else "None"}}</option>
                                     <option value="4">A</option>
-                                    <option value="3.5">B</option>
-                                    <option value="2.5">C</option>
-                                    <option value="2">D</option>
-                                    <option value="1">F</option>
+                                    <option value="3.3">B</option>
+                                    <option value="2.3">C</option>
+                                    <option value="1.5">D</option>
+                                    <option value="0">F</option>
                                  </select>
 
 
@@ -117,7 +111,6 @@
 
                                  <label>Textbook Required:</label> <br>
 
-<!--                                 <input type="number" class="form-control" name="textbook" value="{{row.cTextbook}}">-->
                                  <input type="radio" id="yes" name="textbook" value="1">
                                  <label for="yes">Yes</label><br>
                                  <input type="radio" id="no" name="textbook" value="0">
@@ -129,7 +122,6 @@
 
                                  <label>Is Online:</label> <br>
 
-<!--                                 <input type="number" class="form-control" name="online" value="{{row.cOnline}}">-->
                                  <input type="radio" id="online" name="online" value="1">
                                  <label for="yes">Yes</label><br>
                                  <input type="radio" id="inperson" name="online" value="0">
@@ -143,7 +135,6 @@
 
                                  <label>Class Difficulty:</label> <br>
 
-<!--                                  <input type="number" class="form-control" name="difficulty" value="{{row.cDifficulty}}">-->
                                  <label for="difficulty">Difficulty (1:Easy->5:Hard)        </label>
                                  <input selected value="{{row.cDifficulty if row.cDifficulty else None}}" type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
                                  <output>{{row.cDifficulty}}</output>
@@ -155,7 +146,6 @@
 
                                  <label>Class Quality:</label> <br>
 
-<!--                                 <input type="number" class="form-control" name="quality" value="{{row.cQuality}}">-->
                                   <label for="quality">Quality (1:Bad->5:Great)</label>
                                  <input selected value="{{row.cQuality if row.cQuality else None}}" type="range" id="quality" name="quality" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
                                  <output>{{row.cQuality}}</output>
@@ -168,7 +158,6 @@
 
                                  <label>Suggested Skill:</label> <br>
 
-<!--                                 <input type="text" class="form-control" name="skill" value="{{row.cSkill}}">-->
                                  <select name="skill">
                                     <option disabled selected value="{{row.cSkill}}">{{row.cSkill}}</option>
                                     <option value="Python">Python</option>
@@ -186,7 +175,6 @@
 
                                  <label>Current Class Status:</label> <br>
 
-<!--                                 <input type="text" class="form-control" name="status" value="{{row.cStatus}}">-->
                                  <select name="status">
                                     <option disabled selected value="{{row.cStatus}}">{{row.cStatus}}</option>
                                     <option value="In Progress">In Progress</option>
@@ -237,27 +225,24 @@
          </div>
 
 
-
-         <!-- Modal Add Employee-->
-
-
+         <!-- Edit user info -->
          <div id="mymodal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                <div class="modal-content">
                   <div class="modal-header">
 
-                     <h4 class="modal-title">Add Course</h4>
+                     <h4 class="modal-title">Edit User</h4>
                   </div>
                   <div class="modal-body">
 
-                     <form action="{{url_for('insert')}}" method="POST">
+                     <form action="{{url_for('editUser')}}" method="POST">
 
 
                         <div class="form-group">
 
 
-                           <label>Code:</label>
-                           <input type="text" class="form-control" name="code" required="1">
+                           <label>First Name:</label>
+                           <input type="text" class="form-control" name="fname">
 
 
                         </div>
@@ -266,27 +251,19 @@
                         <div class="form-group">
 
 
-                           <label>Name:</label>
-                           <input type="text" class="form-control" name="name" required="1">
-
-
-                        </div>
-
-                        <div class="form-group">
-
-
-                           <label>Credits:</label>
-                           <input type="number" class="form-control" name="credits" required="1">
+                           <label>Last Name:</label>
+                           <input type="text" class="form-control" name="lname">
 
 
                         </div>
 
 
 
+
                         <div class="form-group">
 
 
-                           <button class="btn btn-primary" type="submit">Add Course</button>
+                           <button class="btn btn-primary" type="submit">Confirm</button>
 
 
                         </div>
@@ -315,18 +292,24 @@
 
          </div>
 
-
-
-
-
       </div>
 
    </div>
 
 
-   <a class="btn btn-primary" href="/viewmajors">View Majors </a>
+   <div style="width:1000px;">
+    <div style="float: left; width: 130px">
+        <form method="post" action="/viewmajors">
+           <button type="submit" name="viewmajor-button" class="btn btn-primary">Select Major</button>
+         </form>
+    </div>
+    <div style="float: left; width: 120px">
+        <form method="post" action="/contactUs">
+           <button type="submit" name="contactus-button" class="btn btn-primary">Contact Us</button>
+         </form>
+    </div>
+   </div>
 
-   <a class ="btn btn-primary" href="/contactUs">Contact Us</a>
 
 </div>
 
