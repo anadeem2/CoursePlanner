@@ -188,21 +188,35 @@ def deleteUser():
     flash("Account removed.")
     return redirect(url_for("logout"))
 
-@app.route('/editUser/')
-def editUser():
-    global user
-
-
+# @app.route('/editUser/')
+# def editUser():
+#     global user
+    
+#     message = Message("Your account has information has been successfully changed.", recipients=[user.sEmail])
+#     mail.send(message)
 
     
-    message = Message("Your account has information has been successfully changed.", recipients=[user.sEmail])
-    mail.send(message)
+#     db.session.commit()
 
-    
-    db.session.commit()
+#     flash("Account information changed.")
+#     return render_template("mainpage.html")
 
-    flash("Account information changed.")
-    return render_template("mainpage.html")
+# @ app.route('/editUser', methods=['POST'])
+# def editUser():
+#     global user
+#     global COURSES
+
+#     code = request.form['code']
+#     name = request.form['name']
+#     credits = request.form['credits']
+
+#     newCourse = Course(user.sID, code, name, credits)
+#     db.session.add(newCourse)
+#     db.session.commit()
+
+#     flash("Course Inserted Successfully")
+#     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
+#     return render_template("mainpage.html", courses=COURSES)
 
 
 @ app.route('/contactUs')  # Contact Us page
@@ -291,17 +305,29 @@ def insert():
     global user
     global COURSES
 
-    code = request.form['code']
-    name = request.form['name']
-    credits = request.form['credits']
-
-    newCourse = Course(user.sID, code, name, credits)
-    db.session.add(newCourse)
+   # code = request.form['code']
+    
+    #credits = request.form['credits']
+    #name = request.form['name']
+    #user_email = request.form.get("email")
+    #user_pass = request.form.get("password")
+    user_fname = request.form.get("fname")
+    user_lname = request.form.get("lname")
+    
+    sFName = user_fname
+    sLName = user_lname
+    
+    
+    
+    #usr = Student(email=user_email, password=user_pass, fname=user_fname, lname=user_lname)
+    #newCourse = Course(user.sID, code, name, credits)
+    
+    
+    #db.session.add(usr)
     db.session.commit()
 
-    flash("Course Inserted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES)
+    flash("User Information edited")
+    return render_template("mainpage.html")
 
 
 # this is our update route where we are going to update course
@@ -431,3 +457,9 @@ if __name__ == "__main__":
     # createMajors()
 
     app.run(debug=True)
+    
+    
+    
+    
+    
+    
