@@ -153,7 +153,7 @@ def logout():
     return render_template("login.html")
 
 
-@ app.route('/forgot', methods=["GET"])
+@ app.route('/forgot', methods=["GET","POST"])
 def forgot():
     if request.method == 'POST':
         user_email = request.form.get("email")
