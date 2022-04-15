@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+<!--EXTEND LAYOUT FILE-->
+
+{% block body %}
+<!--Code goes between body blocks-->
+
+<head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>None</title>
+</head>
+
+<body>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function(){
+      var scourse = {scourse}
+
+
+      $("#classInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      $('.table > tbody > tr').click(function() {
+        scourse = $(this).text();
+        console.log(scourse);
+      });
+    });
+    </script>
+
+
+
+    <div class = "container">
+      <form class="text-left" method="post" action="/mainpage">
+        <button type="submit" name="back-button" class="btn btn-secondary btn-sm">Back</button>
+    </form>
+
+      <h1 align="center">Search Course Bank Page</h1>
+      <h4>Search here</h4>
+      <input class="form-control" id="classInput" type="text" placeholder="Search...">
+      <br>
+      
+
+        <table class="table table-bordered table-striped">
+        
+          <thead>
+            <tr>
+              <th>Available Courses</th>
+              
+            </tr>
+          </thead>
+          <tbody id="myTable">
+            {% for c in coursebank %}
+            <tr>
+                <td>{{c.cDept}} {{c.cCode}}: {{c.cName}}</td>
+
+                <td>
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal{{c.cID}}">Add Course</button>
+
+                  <div id="modal{{c.cID}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                       <div class="modal-content">
+                          <div class="modal-header">
+                             <h4 class="modal-title">{{c.cDept}} {{c.cCode}} Course Details</h4>
+                          </div>
+                          <div class="modal-body">
+
+                             <form action="insertcourse/{{c.cID}}" method="POST">
+
+                               <div class="form-group">
+
+
+                                   <label><b>Description:</b> {{c.cDesc}}</label>
+                                  <label><b>Credits:</b> {{c.cCredits}}</label>
+
+                                </div>
+
+                                <div class="form-group">
+
+
+                                   <label><b>Average Grade:</b> {{db.execute('SELECT ROUND(AVG(cGrade),2) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+
+                                   <label><b>Textbook required percentage:</b> {{db.execute('SELECT ROUND(COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1),2)   \
+                                                                                            FROM COURSE WHERE cCode= :p1 AND cTextbook=1 GROUP BY cTextbook', {'p1':c.cCode}).fetchone()}}</label>
+
+
+
+                                </div>
+
+                                <div class="form-group">
+
+
+                                   <label><b>Percent Online:</b> {{db.execute('SELECT ROUND(COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1),2)   \
+                                                                                            FROM COURSE WHERE cCode= :p1 AND cOnline=1 GROUP BY cOnline', {'p1':c.cCode}).fetchone()}}</label>
+
+
+
+                                </div>
+
+                               <div class="form-group">
+
+
+                                   <label><b>Average Course Difficulty:</b> {{db.execute('SELECT ROUND(AVG(cDifficulty),2) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
+
+
+
+                                </div>
+
+                               <div class="form-group">
+
+
+                                   <label><b>Average Course Quality:</b> {{db.execute('SELECT ROUND(AVG(cQuality),2) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
+
+
+
+                                </div>
+
+                               <div class="form-group">
+
+
+                                   <label><b>Suggested Skills:</b> {{db.execute('SELECT DISTINCT cSkill FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).all()}}</label>
+
+
+
+                                </div>
+
+
+                                <div class="form-group">
+
+
+                                   <button class="btn btn-primary" type="submit">Add Course</button>
+
+
+                                </div>
+
+
+                             </form>
+
+
+                          </div>
+
+
+                          <div class="modal-footer">
+
+
+                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+
+                          </div>
+
+
+                       </div>
+
+
+                    </div>
+
+
+                 </div>
+               </td>
+            </tr>
+            {% endfor %}
+
+
+          </tbody>
+          
+        </table>
+
+        
+      </div>
+
+
+
+</body>
+
+
+
+{% endblock %}
