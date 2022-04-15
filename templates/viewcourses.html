@@ -65,7 +65,6 @@
                     <div class="modal-dialog">
                        <div class="modal-content">
                           <div class="modal-header">
-
                              <h4 class="modal-title">{{c.cDept}} {{c.cCode}} Course Details</h4>
                           </div>
                           <div class="modal-body">
@@ -83,7 +82,7 @@
                                 <div class="form-group">
 
 
-                                   <label><b>Average Grade:</b> {{db.execute('SELECT AVG(cGrade) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
+                                   <label><b>Average Grade:</b> {{db.execute('SELECT ROUND(AVG(cGrade),2) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
 
                                 </div>
 
@@ -91,7 +90,7 @@
                                 <div class="form-group">
 
 
-                                   <label><b>Textbook required percentage:</b> {{db.execute('SELECT COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1)   \
+                                   <label><b>Textbook required percentage:</b> {{db.execute('SELECT ROUND(COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1),2)   \
                                                                                             FROM COURSE WHERE cCode= :p1 AND cTextbook=1 GROUP BY cTextbook', {'p1':c.cCode}).fetchone()}}</label>
 
 
@@ -101,7 +100,7 @@
                                 <div class="form-group">
 
 
-                                   <label><b>Percent Online:</b> {{db.execute('SELECT COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1)   \
+                                   <label><b>Percent Online:</b> {{db.execute('SELECT ROUND(COUNT(*)*100/(SELECT COUNT(*) FROM COURSE WHERE cCode= :p1),2)   \
                                                                                             FROM COURSE WHERE cCode= :p1 AND cOnline=1 GROUP BY cOnline', {'p1':c.cCode}).fetchone()}}</label>
 
 
@@ -111,7 +110,7 @@
                                <div class="form-group">
 
 
-                                   <label><b>Average Course Difficulty:</b> {{db.execute('SELECT AVG(cDifficulty) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
+                                   <label><b>Average Course Difficulty:</b> {{db.execute('SELECT ROUND(AVG(cDifficulty),2) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
 
 
 
@@ -120,7 +119,7 @@
                                <div class="form-group">
 
 
-                                   <label><b>Average Course Quality:</b> {{db.execute('SELECT AVG(cQuality) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
+                                   <label><b>Average Course Quality:</b> {{db.execute('SELECT ROUND(AVG(cQuality),2) FROM COURSE WHERE cCode= :p1', {'p1':c.cCode}).fetchone()}}</label>
 
 
 
