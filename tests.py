@@ -23,8 +23,37 @@ class TestApp(unittest.TestCase):
         user = app.Student.query.filter_by(sEmail=email, sPassword=password).first()
         self.assertEqual(user.sEmail, "usama@gmail.com")
 
+    
+
+    def __search_major_by__name(self, majorName):
+        """Returns the query results for the Major Table when queried by the major's name"""
+        return app.Major.query.filter_by(mName=majorName).first()
+             
+    
+    def test_succesful_search_major(self):   
+        major = self.__search_major_by__name("Computer Science")
+        self.assertEqual("Computer Science", major.mName)
+
+        major = self.__search_major_by__name("Cyber Security")
+        self.assertEqual("Cyber Security", major.mName)
+
+        major = self.__search_major_by__name("Information Technology")
+        self.assertEqual("Information Technology", major.mName)
+
+
+    def test_failed_search_major(self):
+        major = self.__search_major_by__name("Political Science") # no results will be found, so a None object is returned
+        self.assertIsNone(major)
+
+        major = self.__search_major_by__name("Waiter")
+        self.assertIsNone(major)
+
+
+        comsciMajor = self.__search_major_by__name("Computer Science")
+        self.assertFalse("Cyber Security" == comsciMajor.mName) # comparing 'Cyber Security' w/ 'Computer Science' so expected result is False
 
 
 
 if __name__ == '__main__':
     unittest.main()
+    
