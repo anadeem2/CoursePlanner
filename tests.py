@@ -25,31 +25,31 @@ class TestApp(unittest.TestCase):
 
     
 
-    def __search_major_by__name(self, majorName):
+    def __search_major_by_name(self, majorName):
         """Returns the query results for the Major Table when queried by the major's name"""
         return app.Major.query.filter_by(mName=majorName).first()
              
     
     def test_succesful_search_major(self):   
-        major = self.__search_major_by__name("Computer Science")
+        major = self.__search_major_by_name("Computer Science")
         self.assertEqual("Computer Science", major.mName)
 
-        major = self.__search_major_by__name("Cyber Security")
+        major = self.__search_major_by_name("Cyber Security")
         self.assertEqual("Cyber Security", major.mName)
 
-        major = self.__search_major_by__name("Information Technology")
+        major = self.__search_major_by_name("Information Technology")
         self.assertEqual("Information Technology", major.mName)
 
 
     def test_failed_search_major(self):
-        major = self.__search_major_by__name("Political Science") # no results will be found, so a None object is returned
+        major = self.__search_major_by_name("Political Science") # no results will be found, so a None object is returned
         self.assertIsNone(major)
 
-        major = self.__search_major_by__name("Waiter")
+        major = self.__search_major_by_name("Waiter")
         self.assertIsNone(major)
 
 
-        comsciMajor = self.__search_major_by__name("Computer Science")
+        comsciMajor = self.__search_major_by_name("Computer Science")
         self.assertFalse("Cyber Security" == comsciMajor.mName) # comparing 'Cyber Security' w/ 'Computer Science' so expected result is False
 
 
