@@ -11,19 +11,31 @@ class TestDB(unittest.TestCase):
         self.assertEqual(student.sFName, "Fname")
         self.assertEqual(student.sLName, "Lname")
 
+        # app.db.session.add(student)
+        # app.db.session.commit()
+
 
 class TestApp(unittest.TestCase):
-    APP_URL = "http://127.0.0.1:5000/"
-    LOGIN_URL = f"{APP_URL}/login"
 
     def test_login(self):
-        email="usama@gmail.com"
+        email="test@email.com"
         password="123"
 
         user = app.Student.query.filter_by(sEmail=email, sPassword=password).first()
-        self.assertEqual(user.sEmail, "usama@gmail.com")
+        self.assertEqual(user.sEmail, "test@email.com")
 
+    def test_logout(self):
+        email="test@email.com"
+        password="123"
 
+        print(app.user)
+        app.user = app.Student.query.filter_by(sEmail=email, sPassword=password).first()
+        print(app.user.sEmail)
+
+        app.logout()
+        print("hello")
+
+        self.assertEqual(app.user, None)
 
 
 if __name__ == '__main__':
