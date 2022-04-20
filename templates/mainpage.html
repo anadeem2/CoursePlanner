@@ -135,7 +135,7 @@
 
                                  <label>Class Difficulty:</label> <br>
 
-                                 <label for="difficulty">Difficulty (1:Easy->5:Hard)        </label>
+                                 <label for="difficulty">Difficulty (1:Easy->5:Hard)</label>
                                  <input selected value="{{row.cDifficulty if row.cDifficulty else None}}" type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
                                  <output>{{row.cDifficulty}}</output>
 
