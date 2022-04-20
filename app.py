@@ -343,7 +343,6 @@ def delete(id):
 
     flash("Course Deleted Successfully")
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
 
