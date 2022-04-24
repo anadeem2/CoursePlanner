@@ -12,26 +12,32 @@ from flask_mail import Mail, Message
 # Application Configurations
 app = Flask(__name__)
 app.config["SESSION_TYPE"] = "filesystem"
+
+#Session Config
 Session(app)
 app.permanent_session_lifetime = timedelta(days=7)
+
+#Mail Config
 app.config["MAIL_DEFAULT_SENDER"] = "classplannerit326@gmail.com"
 app.config['MAIL_USERNAME'] = "classplannerit326@gmail.com"
 app.config['MAIL_PASSWORD'] = "Planner123!"
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_SERVER'] = "smtp.gmail.com"
 app.config['MAIL_USE_TLS'] = True
+
+#Database Config
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///finaltest.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-
-# # Intitializations
+# Intitializations
 mail = Mail(app)
+db = SQLAlchemy(app)
 user = None
 COURSES = None
 message = ''
 
 
+# ORM Classes
 class Student(db.Model):
     __tablename__ = 'Student'
     sID = db.Column(db.Integer, primary_key=True)
@@ -123,7 +129,7 @@ class Major(db.Model):
         return self.mName
 
 
-
+#Init homepage
 @ app.route('/')
 def index():
     global user
@@ -137,12 +143,13 @@ def index():
     return render_template("mainpage.html", courses=COURSES, name=user.sFName)
 
 
-@ app.route('/login')  # Login page
+# Render Login page
+@ app.route('/login')
 def login():
     return render_template("login.html")
 
-
-@ app.route('/logout')  # Logout
+# Logout, forget user context and remove session
+@ app.route('/logout')
 def logout():
     global user
     global COURSES
@@ -151,7 +158,7 @@ def logout():
     COURSES = user = None
     return render_template("login.html")
 
-
+# Send forgotten password to respective email
 @ app.route('/forgot', methods=["GET","POST"])
 def forgot():
     if request.method == 'POST':
@@ -171,12 +178,12 @@ def forgot():
     else:
         return render_template("forgot.html")
 
-
-@ app.route('/signup')  # Signup page
+# Render Signup page
+@ app.route('/signup')
 def signup():
     return render_template("signup.html")
 
-
+# Removes user acc from database
 @app.route('/deleteUser/')
 def deleteUser():
     global user
@@ -190,13 +197,13 @@ def deleteUser():
     flash("Account removed.")
     return redirect(url_for("logout"))
 
-
-@ app.route('/contactUs', methods=['POST'])  # Contact Us page
+# Render contact Us page
+@ app.route('/contactUs', methods=['POST'])
 def contactUs():
     return render_template("contactUs.html")
 
-
-@ app.route('/contacted', methods=["POST"])  # Contacted Page
+# Sends user feedback to developers
+@ app.route('/contacted', methods=["POST"])
 def contacted():
     global COURSES
     global user
@@ -218,8 +225,8 @@ def contacted():
     flash("Feedback sent!")
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
-
-@ app.route('/registered', methods=["POST"])  # Registered Page
+# Creates user account and saves to DB
+@ app.route('/registered', methods=["POST"])
 def registered():
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
@@ -246,7 +253,7 @@ def registered():
 
     return render_template("login.html")
 
-
+# Validates user login credentials
 @ app.route('/validate', methods=["POST"])
 def validate():
     global user
@@ -278,7 +285,7 @@ def validate():
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
 
-# this route is for editing user's information
+# Updates user account information
 @ app.route('/editUser', methods=['POST'])
 def editUser():
     global user
@@ -299,9 +306,7 @@ def editUser():
     user = Student.query.filter_by(sID=user.sID).first()
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
-
-
-# this is our update route where we are going to update course
+# Update selected course ratings
 @ app.route('/update/<int:id>', methods=['GET','POST'])
 def update(id):
     global user
@@ -330,8 +335,7 @@ def update(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
-
-# This route is for deleting course
+# Removes selected course from user dashboard
 @ app.route('/delete/<id>/', methods=['GET'])
 def delete(id):
     global user
@@ -345,7 +349,7 @@ def delete(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
-
+# Renders major page
 @app.route('/viewmajors', methods=['POST'])
 def viewmajors():
     global user
@@ -360,8 +364,7 @@ def viewmajors():
 
     return render_template("viewmajors.html", majors=majors, curMajor=curMajor)
 
-
-# updates the major in the DB and displays a message reflecting that to that user
+# Updates the user's major
 @ app.route('/updatemajor/<int:majorID>', methods=['POST'])
 def selectmajor(majorID):
     global user
@@ -375,7 +378,7 @@ def selectmajor(majorID):
     user = Student.query.filter_by(sID=user.sID).first()
     return render_template('mainpage.html', courses=COURSES, name=user.sFName)
 
-
+# Renders search courses page
 @app.route('/viewcourses', methods=['POST'])
 def viewcourses():
     global user
@@ -391,7 +394,7 @@ def viewcourses():
 
     return render_template("viewcourses.html", coursebank=coursebank, db=db.session)
 
-
+# Adds selected course to user's dashboard
 @app.route('/insertcourse/<id>', methods=['POST'])
 def insertcourse(id):
     global user
@@ -406,7 +409,7 @@ def insertcourse(id):
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template("mainpage.html", courses=COURSES,name=user.sFName)
 
-
+# Renders users dashboard page
 @ app.route('/mainpage', methods=['POST'])
 def mainpage():
     global user
@@ -415,7 +418,7 @@ def mainpage():
     COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
     return render_template('mainpage.html', courses=COURSES,name=user.sFName)
 
-
+# Method to do init Major inserts
 def createMajors():
     db.session.query(Major).delete()
     comSci = Major(mName='Computer Science', mDept="IT")
@@ -433,6 +436,7 @@ def createMajors():
         print(maj.mID, maj.mName, maj.mDept)
 
 
+# Method to do init courseBank inserts
 def createCourseBank():
     db.session.query(CourseBank).delete()
     with open("IT 326 course list.csv", "r") as f:
@@ -451,10 +455,9 @@ def createCourseBank():
               c.cCredits)
 
 
-
-
 if __name__ == "__main__":
     db.create_all()
+
     # createCourseBank()
     # createMajors()
 
