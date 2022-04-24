@@ -7,7 +7,7 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from flask_mail import Mail, Message
-
+from encryption import encrypt_message,decrypt_message,setup_encryption
 
 # Application Configurations
 app = Flask(__name__)
@@ -167,7 +167,8 @@ def forgot():
 
         if exists:
             message = Message(
-                "Your forgotten password: " + exists.sPassword, recipients=[user_email])
+                "Your forgotten password: " + decrypt_message(exists.sPassword), recipients=[user_email])
+            print(message)
             mail.send(message)
             flash("Email with password sucessfully sent")
             return redirect(url_for("login"))
@@ -229,10 +230,10 @@ def contacted():
 @ app.route('/registered', methods=["POST"])
 def registered():
     user_email = request.form.get("email")
-    user_pass = request.form.get("password")
+    user_pass = encrypt_message(request.form.get("password"))
     user_fname = request.form.get("fname")
     user_lname = request.form.get("lname")
-
+    print(user_pass)
     if not (user_email and user_pass and user_fname and user_lname):
         flash("Invalid credentials")
         return redirect(url_for("signup"))
@@ -261,7 +262,6 @@ def validate():
 
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
-
     if not user_email or not user_pass:
         flash("Invalid credentials")
         return redirect(url_for("signup"))
@@ -271,7 +271,7 @@ def validate():
         flash("No user account for email")
         return redirect(url_for("signup"))
 
-    if user.sPassword != user_pass:
+    if user_pass != decrypt_message(user.sPassword):
         flash("Incorrect password!")
         return redirect(url_for("login"))
 
@@ -456,10 +456,10 @@ def createCourseBank():
 
 
 if __name__ == "__main__":
+    setup_encryption()    
     db.create_all()
 
     # createCourseBank()
     # createMajors()
-
     app.run(debug=True)
-
+    # db.session.commit()

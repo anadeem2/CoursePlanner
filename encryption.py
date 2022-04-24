@@ -34,8 +34,23 @@ def decrypt_message(encrypted_message):
     f = Fernet(key)
     decrypted_message = f.decrypt(encrypted_message)
 
-    return decrypted_message
+    return decrypted_message.decode()
 
+
+def setup_encryption():
+    testMessage = "test"
+    try:
+        encrypted = encrypt_message(testMessage)
+    except FileNotFoundError:
+        generate_key()
+        encrypted = encrypt_message(testMessage)
+    finally:
+        decrypted = decrypt_message(encrypted)
+        return testMessage == decrypted
+
+        
+
+    
 if __name__ == "__main__":
     # generate_key()
     encrypted = encrypt_message("encrypt this message")
