@@ -1,3 +1,4 @@
+from tkinter.font import ITALIC
 import unittest
 import app
 
@@ -176,7 +177,107 @@ class TestApp(unittest.TestCase):
         self.assertNotEqual(curMajor.mID, major3.mID)
         self.assertNotEqual(curMajor.mName, major3.mName)
 
-        app.db.session.commit()
+    
+    def test_add_course(self):
+        userID = 35283
+        userDept = "IT"
+        userCode = 315
+        userName = "Intro to Engineering"
+        userCredit = 4
+        userStatus = "In Progress"
+        
+        
+        curCourse = app.Course.query.first()
+        newCourse = app.Course(userID, userDept, userCode, userName, userCredit, userStatus)
+        
+        self.assertNotEqual(curCourse, newCourse);
+    
+    
+    def test_remove_course(self):
+        curCourse = app.Course.query.first()
+        app.Course.query.filter_by(cID=curCourse.cID).delete()
+        newCourse = app.Course.query.filter_by(cName=curCourse.cName).first()
+        self.assertNotEqual(curCourse, newCourse)
+        
+    
+    def test_update_course_textbook(self):
+        curCourse = app.Course.query.first()
+        curCourseT = curCourse.cTextbook
+        
+        curCourse.cTextbook = 3
+        newCourseT = curCourse.cTextbook
+        
+        self.assertNotEqual(curCourseT, newCourseT)
+        
+    
+    def test_update_course_difficulty(self):
+        curCourse = app.Course.query.first()
+        curCourseDiff = curCourse.cDifficulty
+        
+        curCourse.cDifficulty = 10
+        newCourseDiff = curCourse.cDifficulty
+        
+        self.assertNotEqual(curCourseDiff, newCourseDiff)
+    
+    def test_update_course_skill(self):
+        curCourse = app.Course.query.first()
+        curCourseS = curCourse.cSkill
+        
+        curCourse.cSkill = "Javascript"
+        newCourseS = curCourse.cSkill
+        
+        self.assertNotEqual(curCourseS, newCourseS)  
+    
+    
+    def test_update_course_quality(self):
+        curCourse = app.Course.query.first()
+        curCourseQ = curCourse.cQuality
+        
+        curCourse.cQuality = 10
+        newCourseQ = curCourse.cQuality
+        
+        self.assertNotEqual(curCourseQ, newCourseQ) 
+        
+    
+    def test_update_course_grade(self):
+        curCourse = app.Course.query.first()
+        curCourseG = curCourse.cGrade
+        
+        curCourse.cGrade = 13
+        newCourseG = curCourse.cGrade
+        
+        self.assertNotEqual(curCourseG, newCourseG) 
+        
+   
+    def test_update_course_status(self):
+        curCourse = app.Course.query.first()
+        curCourseStatus = curCourse.cStatus
+        
+        curCourse.cStatus = "Finished"
+        newCourseStatus = curCourse.cStatus
+        
+        self.assertNotEqual(curCourseStatus, newCourseStatus)
+    
+    
+    def test_update_course_online(self):
+        curCourse = app.Course.query.first()
+        curCourseO = curCourse.cOnline
+        
+        curCourse.cOnline = 3
+        newCourseO = curCourse.cOnline
+        
+        self.assertNotEqual(curCourseO, newCourseO) 
+    
+    def test_update_account(self):
+        user_email = "test@email.com"
+
+        student = app.Student.query.filter_by(sEmail=user_email).first()
+        oldName = student.sFName
+        user_newfname = "Pie"
+        student.sFName = user_newfname
+
+        self.assertNotEqual(student.sFName, oldName)
+
 
 
 if __name__ == '__main__':
