@@ -98,9 +98,9 @@ class Course(db.Model):
 
 class CourseBank(db.Model):
     cID = db.Column(db.Integer, primary_key=True)
-    cDept = db.Column(db.String(200), nullable=False)  # IT
-    cCode = db.Column(db.String(20), nullable=False)  # 383
-    cName = db.Column(db.String(200), nullable=False)  # Operating Systems
+    cDept = db.Column(db.String(200), nullable=False)
+    cCode = db.Column(db.String(20), nullable=False)
+    cName = db.Column(db.String(200), nullable=False)
     cCredits = db.Column(db.String(20), nullable=False)
     cDesc = db.Column(db.String(200), nullable=False)
 
