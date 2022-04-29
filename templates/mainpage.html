@@ -2,6 +2,58 @@
 <!--EXTEND LAYOUT FILE-->
 
 {% block body %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<style>
+ul{
+   padding:0;
+   margin:0;
+}
+
+.diff{
+   list-style-type: none;
+   display: inline-block;
+   margin: 10px;
+   color: #ccc;
+   font-size:30px;
+}
+
+.diff:hover{
+   color:#c59b08;
+}
+
+.diff.active, .diff.secondary-active{
+   color:#c59b08;
+}
+
+
+.qual{
+   list-style-type: none;
+   display: inline-block;
+   margin: 10px;
+   color: #ccc;
+   font-size:30px;
+}
+
+.qual:hover{
+   color:#c59b08;
+}
+
+.qual.active, .qual.secondary-active{
+   color:#c59b08;
+}
+
+.hiddenRadioButton{ display:none; }
+
+.radioBottom{
+    display: block;
+    margin: 0 auto;
+}
+label {
+    display: inline-block;
+}
+
+</style>
 
 
 <div class="container-fluid">
@@ -132,26 +184,46 @@
 
                               <div class="form-group">
 
-
-                                 <label>Class Difficulty:</label> <br>
-
-                                 <label for="difficulty">Difficulty (1:Easy->5:Hard)</label>
-                                 <input selected value="{{row.cDifficulty if row.cDifficulty else None}}" type="range" id="difficulty" name="difficulty" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
-                                 <output>{{row.cDifficulty}}</output>
+                                 <label>Class Difficulty (1:Easy->5:Hard):</label> <br>
+                                 <ul>
+                                    <li class="diff"><label for="drate1">★</label><input type="radio" class="radioBottom" name="difficulty" id="drate1" value="1"></li>
+                                    <li class="diff"><label for="drate2">★</label><input type="radio" class="radioBottom" name="difficulty" id="drate2" value="2"></li>
+                                    <li class="diff"><label for="drate3">★</label><input type="radio" class="radioBottom" name="difficulty" id="drate3" value="3"></li>
+                                    <li class="diff"><label for="drate4">★</label><input type="radio" class="radioBottom" name="difficulty" id="drate4" value="4"></li>
+                                    <li class="diff"><label for="drate5">★</label><input type="radio" class="radioBottom" name="difficulty" id="drate5" value="5"></li>
+                                 </ul>
 
                               </div>
+                              <script>
+                                 $('.diff').on('click', function(){
+                                    $('.diff').removeClass('active');
+                                    $('.diff').removeClass('secondary-active');
+                                    $(this).addClass('active');
+                                    $(this).prevAll().addClass('secondary-active');
+                                 })
+                              </script>
 
                               <div class="form-group">
 
-
-                                 <label>Class Quality:</label> <br>
-
-                                  <label for="quality">Quality (1:Bad->5:Great)</label>
-                                 <input selected value="{{row.cQuality if row.cQuality else None}}" type="range" id="quality" name="quality" min="1" max="5" value="rating" oninput="this.nextElementSibling.value = this.value">
-                                 <output>{{row.cQuality}}</output>
-
+                                 <label>Class Quality (1:Bad->5:Great):</label> <br>
+                                    <ul>
+                                    <li class="qual"><label for="rate1">★</label><input type="radio" class="radioBottom" name="quality" id="rate1" value="1"></li>
+                                    <li class="qual"><label for="rate2">★</label><input type="radio" class="radioBottom" name="quality" id="rate2" value="2"></li>
+                                    <li class="qual"><label for="rate3">★</label><input type="radio" class="radioBottom" name="quality" id="rate3" value="3"></li>
+                                    <li class="qual"><label for="rate4">★</label><input type="radio" class="radioBottom" name="quality" id="rate4" value="4"></li>
+                                    <li class="qual"><label for="rate5">★</label><input type="radio" class="radioBottom" name="quality" id="rate5" value="5"></li>
+                                 </ul>
+                                    <br><br>
 
                               </div>
+                              <script>
+                                 $('.qual').on('click', function(){
+                                    $('.qual').removeClass('active');
+                                    $('.qual').removeClass('secondary-active');
+                                    $(this).addClass('active');
+                                    $(this).prevAll().addClass('secondary-active');
+                                 })
+                              </script>
 
                               <div class="form-group">
 
