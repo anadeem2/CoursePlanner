@@ -1,10 +1,10 @@
 @Authors
 
-Awais Nadeem
-Usama Nadeem
-Savani Sayani
-Tom Freier
-Mara Dimitroff
+Awais Nadeem,
+Usama Nadeem,
+Savani Sayani,
+Tom Freier,
+Mara Dimitroff,
 
 Hosted at: http://usama280.pythonanywhere.com/
 
