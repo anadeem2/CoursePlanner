@@ -335,8 +335,6 @@ def validate():
         flash("Incorrect password!")
         return redirect(url_for("login"))
 
-    # Create user session
-    session['user'] = user
     # Save user session 7-days if remember-me true, else 60min
     if request.form.get("checkbox"):
         app.permanent_session_lifetime = timedelta(days=7)
@@ -344,6 +342,9 @@ def validate():
     else:
         app.permanent_session_lifetime = timedelta(minutes=60)
         session.permanent = False
+
+    # Create user session
+    session['user'] = user
 
     return redirect(url_for("mainpage"))  # student view
 
@@ -417,7 +418,7 @@ def delete(id):
     # Grab db cursor to course object
     Course.query.filter_by(
         cStudentID=session['user'].sID, cID=id).delete()
-    
+
     # Save & store to database
     db.session.commit()
 
@@ -480,7 +481,8 @@ def viewcourses():
     coursebank = CourseBank.query.filter_by(
         cDept=curMajor.mDept).all()  # query by dept
 
-    return render_template("viewcourses.html", coursebank=coursebank, db=db.session) # Course view
+    # Course view
+    return render_template("viewcourses.html", coursebank=coursebank, db=db.session)
 
 # Adds selected course to user's dashboard/plan
 # Course handler
@@ -499,7 +501,7 @@ def insertcourse(id):
 
     # notfiy user
     flash("Course Inserted Successfully")
-    return redirect(url_for("mainpage")) # student view
+    return redirect(url_for("mainpage"))  # student view
 
 # Renders users dashboard/plan page
 # Student handler
@@ -509,12 +511,13 @@ def insertcourse(id):
 def mainpage():
     # Refresh user & display list of courses student is taking
     session['user'] = Student.query.filter_by(sID=session['user'].sID).first()
-    if(session['user'] == None):
+    if not (session['user']):
         return redirect(url_for("logout"))
     COURSES = Course.query.filter_by(
         cStudentID=session['user'].sID).order_by("cStatus").all()
 
-    return render_template('mainpage.html', courses=COURSES, name=session['user'].sFName) # student view
+    # student view
+    return render_template('mainpage.html', courses=COURSES, name=session['user'].sFName)
 
 
 # =========================================
@@ -575,8 +578,8 @@ if __name__ == "__main__":
     db.create_all()
 
     # Only call first time running app, comment otherwise
-    createCourseBank()
-    createMajors()
+    # createCourseBank()
+    # createMajors()
 
     # can choose to turn of debug for faster performance
     app.run(debug=True)
