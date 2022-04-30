@@ -107,7 +107,6 @@ class TestApp(unittest.TestCase):
         self.assertFalse(
             "Cyber Security" == comsciMajor.mName)  # comparing 'Cyber Security' w/ 'Computer Science' so expected result is False
 
-        self.assertEqual(app.user, None)
 
     def test_succesful_search_course(self):
         course = self.__search_coursebank_by_name("Principles Of Software Engineering")
