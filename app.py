@@ -15,7 +15,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 #Session Config
 Session(app)
-app.permanent_session_lifetime = timedelta(days=7)
 
 #Mail Config
 app.config["MAIL_DEFAULT_SENDER"] = "classplannerit326@gmail.com"
@@ -32,8 +31,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Intitializations
 mail = Mail(app)
 db = SQLAlchemy(app)
-user = None
-COURSES = None
 message = ''
 
 
@@ -132,15 +129,10 @@ class Major(db.Model):
 #Init homepage
 @ app.route('/')
 def index():
-    global user
-    global COURSES
-
     if "user" not in session:  # Check if session doesn't exist
         return render_template("index.html")
 
-    user = session['user']
-    COURSES = Course.query.filter_by(cStudentID=session['user'].sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES, name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 
 # Render Login page
@@ -151,11 +143,7 @@ def login():
 # Logout, forget user context and remove session
 @ app.route('/logout')
 def logout():
-    global user
-    global COURSES
-
     session.pop("user", None)
-    COURSES = user = None
     return render_template("login.html")
 
 # Send forgotten password to respective email
@@ -186,12 +174,10 @@ def signup():
 # Removes user acc from database
 @app.route('/deleteUser/')
 def deleteUser():
-    global user
-
-    message = Message("Your account has been successfully deleted.", recipients=[user.sEmail])
+    message = Message("Your account has been successfully deleted.", recipients=[session['user'].sEmail])
     mail.send(message)
 
-    db.session.delete(user)
+    db.session.delete(session['user'])
     db.session.commit()
 
     flash("Account removed.")
@@ -205,9 +191,6 @@ def contactUs():
 # Sends user feedback to developers
 @ app.route('/contacted', methods=["POST"])
 def contacted():
-    global COURSES
-    global user
-
     email_subject = request.form.get("subject")
     email_message = request.form.get("message")
     admin_email = "developerit326@gmail.com"
@@ -223,7 +206,7 @@ def contacted():
     # Send confirmaton email
     mail.send(message)
     flash("Feedback sent!")
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 # Creates user account and saves to DB
 @ app.route('/registered', methods=["POST"])
@@ -256,9 +239,6 @@ def registered():
 # Validates user login credentials
 @ app.route('/validate', methods=["POST"])
 def validate():
-    global user
-    global COURSES
-
     user_email = request.form.get("email")
     user_pass = request.form.get("password")
 
@@ -275,23 +255,24 @@ def validate():
         flash("Incorrect password!")
         return redirect(url_for("login"))
 
-    # Add user session if checkbox true
-    if request.method == "POST" and request.form.get("checkbox"):
+    # Save user session 7-days if remember-me true, else 60min
+    if request.form.get("checkbox"):
+        app.permanent_session_lifetime = timedelta(days=7)
         session.permanent = True
+        session["user"] = user
+    else:
+        app.permanent_session_lifetime = timedelta(minutes=60)
+        session.permanent = False
         session["user"] = user
 
 
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 
 # Updates user account information
 @ app.route('/editUser', methods=['POST'])
 def editUser():
-    global user
-    global COURSES
-
-    updateUser = Student.query.filter_by(sID=user.sID).first()
+    updateUser = Student.query.filter_by(sID=session['user'].sID).first()
     if request.form.get('fname'):
         updateUser.sFName = request.form.get('fname')
     if request.form.get('lname'):
@@ -299,21 +280,17 @@ def editUser():
 
     db.session.commit()
     
-    message = Message("Your account has information has been successfully updated.", recipients=[user.sEmail])
+    message = Message("Your account has information has been successfully updated.", recipients=[session['user'].sEmail])
     mail.send(message)
 
     flash("User information updated.")
-    user = Student.query.filter_by(sID=user.sID).first()
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 # Update selected course ratings
 @ app.route('/update/<int:id>', methods=['GET','POST'])
 def update(id):
-    global user
-    global COURSES
-
     updateCourse = Course.query.filter_by(
-        cStudentID=user.sID, cID=id).first()
+        cStudentID=session['user'].sID, cID=id).first()
 
     if request.form.get('textbook'):
         updateCourse.cTextbook = request.form.get('textbook')
@@ -332,33 +309,25 @@ def update(id):
     db.session.commit()
 
     flash("Course Updated Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 # Removes selected course from user dashboard
 @ app.route('/delete/<id>/', methods=['GET'])
 def delete(id):
-    global user
-    global COURSES
-
     Course.query.filter_by(
-        cStudentID=user.sID, cID=id).delete()
+        cStudentID=session['user'].sID, cID=id).delete()
     db.session.commit()
 
     flash("Course Deleted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 # Renders major page
 @app.route('/viewmajors', methods=['POST'])
 def viewmajors():
-    global user
-    global COURSES
-
     majors = Major.query.all()
 
     curMajor = db.session.query(Major)\
-        .filter(Major.mID == user.sMajorID).first()
+        .filter(Major.mID == session['user'].sMajorID).first()
 
     if not curMajor: curMajor="Undecided"
 
@@ -367,29 +336,21 @@ def viewmajors():
 # Updates the user's major
 @ app.route('/updatemajor/<int:majorID>', methods=['POST'])
 def selectmajor(majorID):
-    global user
-    global COURSES
-
-    updateUser = Student.query.filter_by(sID=user.sID).first()
+    updateUser = Student.query.filter_by(sID=session['user'].sID).first()
     updateUser.sMajorID = majorID
     db.session.commit()
 
     flash("Major Successfully Updated")
-    user = Student.query.filter_by(sID=user.sID).first()
-    return render_template('mainpage.html', courses=COURSES, name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 # Renders search courses page
 @app.route('/viewcourses', methods=['POST'])
 def viewcourses():
-    global user
-    global COURSES
-
-    if user.sMajorID==0:
+    if session['user'].sMajorID==0:
         flash("Must select major")
-        return render_template('mainpage.html', courses=COURSES, name=user.sFName)
+        return redirect(url_for("mainpage"))
 
-
-    curMajor = db.session.query(Major).filter(Major.mID==user.sMajorID).first() #Get user dept
+    curMajor = Major.query.filter_by(mID=session['user'].sMajorID).first() #Get user dept
     coursebank = CourseBank.query.filter_by(cDept=curMajor.mDept).all() #query by dept
 
     return render_template("viewcourses.html", coursebank=coursebank, db=db.session)
@@ -397,26 +358,21 @@ def viewcourses():
 # Adds selected course to user's dashboard
 @app.route('/insertcourse/<id>', methods=['POST'])
 def insertcourse(id):
-    global user
-    global COURSES
-
     course = CourseBank.query.filter_by(cID=id).first()
-    newCourse = Course(user.sID, course.cDept, course.cCode, course.cName, course.cCredits)
+    newCourse = Course(session['user'].sID, course.cDept, course.cCode, course.cName, course.cCredits)
     db.session.add(newCourse)
     db.session.commit()
 
     flash("Course Inserted Successfully")
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template("mainpage.html", courses=COURSES,name=user.sFName)
+    return redirect(url_for("mainpage"))
 
 # Renders users dashboard page
-@ app.route('/mainpage', methods=['POST'])
+@ app.route('/mainpage', methods=['POST', 'GET'])
 def mainpage():
-    global user
-    global COURSES
+    session['user'] = Student.query.filter_by(sID=session['user'].sID).first()
+    COURSES = Course.query.filter_by(cStudentID=session['user'].sID).order_by("cStatus").all()
 
-    COURSES = Course.query.filter_by(cStudentID=user.sID).order_by("cStatus").all()
-    return render_template('mainpage.html', courses=COURSES,name=user.sFName)
+    return render_template('mainpage.html', courses=COURSES,name=session['user'].sFName)
 
 # Method to do init Major inserts
 def createMajors():
