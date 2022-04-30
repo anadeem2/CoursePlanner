@@ -387,19 +387,19 @@ def update(id):
         cStudentID=session['user'].sID, cID=id).first()
 
     # only update provided fields (if evalues to false if null)
-    if request.form.get('textbook'):
+    if request.form.get('textbook'):  # ProcessTextbookUsed
         updateCourse.cTextbook = request.form.get('textbook')
-    if request.form.get('difficulty'):
+    if request.form.get('difficulty'):  # ProcessDifficulty
         updateCourse.cDifficulty = request.form.get('difficulty')
-    if request.form.get('skill'):
+    if request.form.get('skill'):  # ProcessSkill
         updateCourse.cSkill = request.form.get('skill')
-    if request.form.get('quality'):
+    if request.form.get('quality'):  # ProcessQuality
         updateCourse.cQuality = request.form.get('quality')
-    if request.form.get('grade'):
+    if request.form.get('grade'):  # ProcessGrade
         updateCourse.cGrade = request.form.get('grade')
-    if request.form.get('status'):
+    if request.form.get('status'):  # ProcessStatus
         updateCourse.cStatus = request.form.get('status')
-    if request.form.get('online'):
+    if request.form.get('online'):  # ProcessOnlineAvail
         updateCourse.cOnline = request.form.get('online')
 
     # Save & store to database
