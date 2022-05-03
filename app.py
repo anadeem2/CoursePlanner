@@ -511,8 +511,9 @@ def insertcourse(id):
 def mainpage():
     # Refresh user & display list of courses student is taking
     session['user'] = Student.query.filter_by(sID=session['user'].sID).first()
-    if not (session['user']):
-        return redirect(url_for("logout"))
+    # Unnecessary check (only happens when we drop database & user had stored session - unapplicable in production)
+    # if not (session['user']):
+    #     return redirect(url_for("logout"))
     COURSES = Course.query.filter_by(
         cStudentID=session['user'].sID).order_by("cStatus").all()
 
